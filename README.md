@@ -1,4 +1,4 @@
-# wss-front
+# post-it
 
 ## Project setup
 ```

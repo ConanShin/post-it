@@ -1,5 +1,5 @@
 {
-  "name": "wss-front",
+  "name": "post-it",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -21,6 +21,7 @@
     "@vue/cli-service": "~4.2.0",
     "sass": "^1.25.0",
     "sass-loader": "^8.0.2",
+    "vue-property-decorator": "^8.4.1",
     "vue-template-compiler": "^2.6.11"
   }
 }
