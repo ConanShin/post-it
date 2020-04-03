@@ -1,5 +1,9 @@
-const today = new Date()
-const stringToday = today.getFullYear() + "/" + today.getMonth()+1 + "/" + today.getDay()
-const stringYesterday = today.getFullYear() + "/" + today.getMonth()+1 + "/" + today.getDay()-1
 
-export default {stringToday, stringYesterday}
+const dateToString = date => date.getFullYear() + "/" + date.getMonth()+1 + "/" + date.getDay()
+const isToday = date => {
+    const targetDate = new Date(date)
+    const today = new Date()
+    return dateToString(targetDate) === dateToString(today)
+}
+
+export default {dateToString, isToday}
