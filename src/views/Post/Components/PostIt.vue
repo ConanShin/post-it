@@ -1,5 +1,10 @@
 <template>
-    <div :author="post.name" class="post-it">{{post.text}}</div>
+    <div class="post-it">
+        <div class="text-area">
+            {{post.text}}
+        </div>
+        <div class="author">{{post.name}}</div>
+    </div>
 </template>
 
 <script>
@@ -13,20 +18,22 @@
 
 <style scoped lang="scss">
     .post-it {
-        display: inline-block;
+        margin: 5px;
+        display: flex;
+        flex-direction: column;
+        background: lightgoldenrodyellow;
+        font-size: 13px;
+        padding: 13px;
+    }
+    .text-area {
         width: 200px;
         height: 200px;
-        background: lightgoldenrodyellow;
-        font-size: 14px;
-        padding: 15px 15px 30px 15px;
-        margin: 5px;
+        padding: 15px 15px 0 15px;
         white-space: pre-wrap;
         text-align: left;
+        overflow-y: auto;
     }
-    [author]::after {
-        content: attr(author);
-        position: relative;
-        top: 205px;
-        float: right;
+    .author {
+        text-align: right;
     }
 </style>

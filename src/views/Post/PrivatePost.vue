@@ -8,7 +8,7 @@
         </article>
 
         <div v-if="newPost.visible" class="new-post">
-            <textarea class="post-it" v-model="newPost.text"></textarea>
+            <textarea class="new-post-it" v-model="newPost.text"></textarea>
             <div @click="saveNewPost" class="save-new-post button">save</div>
             <div @click="closeAddPost" class="close-add-post button">cancel</div>
         </div>
@@ -56,7 +56,7 @@
         flex-wrap: wrap;
     }
 
-    .post-it {
+    .new-post-it {
         display: inline-block;
         width: 200px;
         height: 200px;
