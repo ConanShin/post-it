@@ -11,7 +11,7 @@
                 <img src="@/assets/logout.png"/>
             </div>
         </nav>
-        <tabs @change="scrollToTop" :tabs="tabs">
+        <tabs @change="setScroll" :tabs="tabs">
             <private-post :key="refreshTrigger + '1'" class="page"></private-post>
             <today-post :key="refreshTrigger + '2'" class="page"></today-post>
             <all-post :key="refreshTrigger + '3'" class="page"></all-post>
@@ -39,14 +39,12 @@
             {label: 'Today'},
             {label: 'All'}
         ]
-        selectedTabIndex = 0
         originalHeights = null
 
-        get refreshTrigger () {
-            setTimeout(() => {
-                this.originalHeights = Array.from(document.querySelectorAll('.post-it-area')).map(page => page.offsetHeight)
-                this.clickTab(this.selectedTabIndex)
-            }, 100)
+        get refreshTrigger() {
+            console.log('refresh data changed')
+            this.originalHeights = null
+            this.setScroll()
             return this.$store.getters.refreshTrigger
         }
 
@@ -62,29 +60,23 @@
             this.$store.dispatch('logout')
         }
 
-        clickTab(index) {
-            document.querySelectorAll('.title-item')[index].click()
-        }
-
-        setScrollHeight() {
+        setScroll() {
             setTimeout(() => {
+                document.querySelector('.tabs-content').scrollTop = 0
+                const selectedTab = Array.from(document.querySelectorAll('.title-item')).findIndex(item => item.classList.contains('active'))
+                if (!this.originalHeights) this.originalHeights = Array.from(document.querySelectorAll('.post-it-area')).map(page => page.scrollHeight)
                 document.querySelectorAll('.post-it-area').forEach(page => {
-                    page.style.height = this.originalHeights[this.selectedTabIndex] + 'px'
+                    page.style.height = this.originalHeights[selectedTab] + 'px'
                     page.style.overflow = 'hidden'
                 })
-            }, 500)
-        }
-
-        scrollToTop(tabIndex) {
-            this.selectedTabIndex = tabIndex
-            document.querySelector('.tabs-content').scrollTop = 0
-            this.setScrollHeight()
+            }, 100)
         }
     }
 </script>
 
 <style lang="scss">
     @import '@/utils/MediaQuery.scss';
+
     .tabs {
         height: 100%;
     }
@@ -94,11 +86,13 @@
             height: calc(100% - 81px) !important;
         }
     }
+
     @include desktop {
         .tabs-content {
             height: calc(100% - 98px) !important;
         }
     }
+
     .tabs-content {
 
         overflow-y: auto !important;
@@ -107,14 +101,17 @@
 </style>
 <style scoped lang="scss">
     @import '@/utils/MediaQuery.scss';
+
     .main {
         height: 100%;
     }
+
     nav {
         display: flex;
         align-items: center;
         justify-content: space-between;
     }
+
     .page {
         display: inline-table !important;
         width: 100%;
@@ -122,6 +119,7 @@
         font-size: 14px;
         margin-bottom: 10px;
     }
+
     @include mobile {
         .search-bar {
             font-size: 12px;
@@ -166,14 +164,17 @@
         color: darkslategray;
         padding: 10px;
     }
+
     .user-info {
         display: inherit;
         align-items: center;
     }
+
     .user-name {
         display: inline-block;
         color: gray;
     }
+
     .user-image {
     }
 

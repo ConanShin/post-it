@@ -50,7 +50,7 @@
         }
 
         publishPost() {
-            if(confirm('공유 하시겠습니까?')) {
+            if(confirm('공유 하시겠습니까?\n수정중인 다른 포스트잇 내용은 리셋됩니다.')) {
                 this.$store.dispatch('publishPost', this.post.uid)
             }
         }

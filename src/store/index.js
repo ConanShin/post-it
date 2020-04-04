@@ -34,7 +34,6 @@ export default new Vuex.Store({
         },
         refresh: (state, payload) => {
             state.refreshTrigger = payload
-            console.log('refreshed')
         }
     },
     actions: {
@@ -64,12 +63,10 @@ export default new Vuex.Store({
             await axios.put(`/post/publish/${postId}`)
             store.dispatch('fetchPosts')
             store.commit('refresh', !store.state.refreshTrigger)
-
         },
         updatePost: async (store, post) => {
             await axios.put(`/post/${post.postId}`, {text: post.text})
             store.dispatch('fetchPosts')
-            store.commit('refresh', !store.state.refreshTrigger)
         },
         deletePost: async (store, postId) => {
             await axios.delete(`/post/${postId}`)
