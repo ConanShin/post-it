@@ -1,5 +1,3 @@
-import SessionStorage from '@/utils/SessionStorage'
-
 class KakaoConnector {
     constructor() {
         Kakao.init('8d154019fab779af4bff62678b0a6eb6')
@@ -20,17 +18,26 @@ class KakaoConnector {
     login() {
         return new Promise((resolve, reject) => {
             const success = function(response) {
+                console.log('succes??')
                 Kakao.Auth.setAccessToken(response.access_token)
-                resolve()
+                console.log('success access token', response.access_token, this)
+                resolve(response.access_token)
             }
             const fail = function(error) {
+                alert(error)
                 reject(error)
             }
-            Kakao.Auth.login({success, fail})
+            console.log('login trying')
+            Kakao.Auth.login({
+                success,
+                fail
+            })
+            console.log('login tried!')
         })
     }
     logout() {
         Kakao.Auth.logout(function() {
+            alert('success log out')
             Promise.resolve()
         })
     }

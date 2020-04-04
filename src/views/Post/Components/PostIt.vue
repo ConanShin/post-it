@@ -56,7 +56,7 @@
         }
 
         deletePost() {
-            if (confirm('삭제 하시겠습니까?')) {
+            if (confirm('삭제 하시겠습니까?\n수정중인 다른 포스트잇 내용은 리셋됩니다.')) {
                 this.$store.dispatch('deletePost', this.post.uid)
             }
         }
@@ -72,7 +72,8 @@
         flex-direction: column;
         background: lightgoldenrodyellow;
         padding: 13px;
-        box-shadow: 6px 6px 5px 0px rosybrown
+        box-shadow: 6px 6px 5px 0px rosybrown;
+        max-height: 244px;
     }
 
     .menu {

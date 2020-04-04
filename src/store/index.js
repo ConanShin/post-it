@@ -21,7 +21,8 @@ export default new Vuex.Store({
     state: {
         searchKeyword: '',
         myPosts: [],
-        publicPosts: []
+        publicPosts: [],
+        refreshTrigger: true
     },
     mutations: {
         setSearchKeyword: (state, payload) => {
@@ -31,8 +32,9 @@ export default new Vuex.Store({
             state.myPosts = payload.myPosts
             state.publicPosts = payload.publicPosts
         },
-        addPost: (state, payload) => {
-            state.posts.push(payload)
+        refresh: (state, payload) => {
+            state.refreshTrigger = payload
+            console.log('refreshed')
         }
     },
     actions: {
@@ -47,6 +49,7 @@ export default new Vuex.Store({
             await KakaoConnector.logout()
             SessionStorage.flush()
             VueRouter.push({name: 'Login'})
+            location.reload() // reload 없으면 카카오 로그인이 Promise return을 하지 않는다..?
         },
         updateUser: async store => {
             const {name} = SessionStorage.user()
@@ -55,18 +58,23 @@ export default new Vuex.Store({
         newPost: async (store, text) => {
             await axios.post('/post', {text})
             store.dispatch('fetchPosts')
+            store.commit('refresh', !store.state.refreshTrigger)
         },
         publishPost: async (store, postId) => {
             await axios.put(`/post/publish/${postId}`)
             store.dispatch('fetchPosts')
+            store.commit('refresh', !store.state.refreshTrigger)
+
         },
         updatePost: async (store, post) => {
             await axios.put(`/post/${post.postId}`, {text: post.text})
             store.dispatch('fetchPosts')
+            store.commit('refresh', !store.state.refreshTrigger)
         },
         deletePost: async (store, postId) => {
             await axios.delete(`/post/${postId}`)
             store.dispatch('fetchPosts')
+            store.commit('refresh', !store.state.refreshTrigger)
         },
         fetchPosts: async store => {
             const {data} = await axios.get('/posts')
@@ -78,5 +86,6 @@ export default new Vuex.Store({
         filteredPrivatePost: state => state.myPosts.filter(post => post.text.includes(state.searchKeyword)),
         filteredTodayPost: state => state.publicPosts.filter(post => DateUtil.isToday(post.date)).filter(post => post.text.includes(state.searchKeyword)),
         filteredAllPost: state => state.publicPosts.filter(post => post.text.includes(state.searchKeyword)),
+        refreshTrigger: state => state.refreshTrigger
     }
 })

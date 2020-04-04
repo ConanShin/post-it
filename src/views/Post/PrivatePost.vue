@@ -1,6 +1,7 @@
 <template>
     <div class="private-post">
-        <h3>Private Post</h3><div @click="showAddPost" class="button">+</div>
+        <h3>Private Post</h3>
+        <div @click="showAddPost" class="button">+</div>
         <article class="post-it-area">
             <template v-for="post in privatePost">
                 <post-it :post="post"></post-it>
@@ -27,20 +28,25 @@
             visible: false,
             text: ''
         }
-        get privatePost () {
+
+        get privatePost() {
             return this.$store.getters.filteredPrivatePost
         }
-        resetNewPost () {
+
+        resetNewPost() {
             this.newPost.visible = false
             this.newPost.text = ''
         }
-        showAddPost () {
+
+        showAddPost() {
             this.newPost.visible = true
         }
-        closeAddPost () {
+
+        closeAddPost() {
             this.resetNewPost()
         }
-        saveNewPost () {
+
+        saveNewPost() {
             this.$store.dispatch('newPost', this.newPost.text)
             this.resetNewPost()
         }
@@ -49,27 +55,42 @@
 
 <style scoped lang="scss">
     @import "@/utils/Common.scss";
+    @import '@/utils/MediaQuery.scss';
 
     h3 {
         display: inline-block;
     }
+
     .post-it-area {
         @include post-it-area;
     }
 
+    @include mobile {
+        .new-post {
+            top: 8vh;
+            left: 15vw;
+        }
+    }
+
+    @include desktop {
+        .new-post {
+            top: 25vh;
+            left: 25vw;
+        }
+    }
+
     .new-post {
         position: absolute;
-        top: 25vh;
-        left: 25vw;
+        border-radius: 1px;
+        box-shadow: 8px 8px 7px 7px rosybrown;
+        background: lightgoldenrodyellow;
+        padding: 44px 15px 15px 15px;
 
         textarea {
             display: inline-block;
+            font-size: inherit;
             width: 200px;
             height: 200px;
-            margin: 5px;
-            box-shadow: 8px 8px 7px 7px rosybrown;
-            padding: 35px 15px 15px 15px;
-
             @include post-it;
         }
 
@@ -78,6 +99,7 @@
             top: 10px;
             right: 23px;
         }
+
         .save-new-post {
             position: absolute;
             top: 10px;
