@@ -28,7 +28,6 @@ export default new Vuex.Store({
             state.searchKeyword = payload
         },
         setPosts: (state, payload) => {
-            console.log(payload)
             state.myPosts = payload.myPosts
             state.publicPosts = payload.publicPosts
         },
@@ -41,6 +40,7 @@ export default new Vuex.Store({
             await KakaoConnector.login()
             const user = await KakaoConnector.fetchUserInfo()
             SessionStorage.save('user', user)
+            store.dispatch('updateUser')
             VueRouter.push({name: 'Post'})
         },
         logout: async store => {
@@ -49,11 +49,15 @@ export default new Vuex.Store({
             VueRouter.push({name: 'Login'})
         },
         updateUser: async store => {
-            const {id, name} = SessionStorage.user()
-            await axios.post('/user', {id, name})
+            const {name} = SessionStorage.user()
+            await axios.post('/user', {name})
         },
         newPost: async (store, text) => {
-            await axios.post('/post', {id: SessionStorage.user().id, text})
+            await axios.post('/post', {text})
+            store.dispatch('fetchPosts')
+        },
+        updatePost: async (store, post) => {
+            await axios.put(`/post/${post.postId}`, {text: post.text})
             store.dispatch('fetchPosts')
         },
         deletePost: async (store, postId) => {
