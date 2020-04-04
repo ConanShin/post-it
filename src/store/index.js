@@ -19,12 +19,19 @@ axios.interceptors.request.use(config => {
 
 export default new Vuex.Store({
     state: {
+        disabledSearch: false,
         searchKeyword: '',
         myPosts: [],
         publicPosts: [],
         refreshTrigger: true
     },
     mutations: {
+        disableSearch: state => {
+            state.disabledSearch = true
+        },
+        enableSearch: state => {
+            state.disabledSearch = false
+        },
         setSearchKeyword: (state, payload) => {
             state.searchKeyword = payload
         },
@@ -33,6 +40,7 @@ export default new Vuex.Store({
             state.publicPosts = payload.publicPosts
         },
         refresh: (state, payload) => {
+            state.searchKeyword = ''
             state.refreshTrigger = payload
         }
     },
@@ -80,6 +88,8 @@ export default new Vuex.Store({
     },
     modules: {},
     getters: {
+        disabledSearch: state => state.disabledSearch,
+        searchKeyword: state => state.searchKeyword,
         filteredPrivatePost: state => state.myPosts.filter(post => post.text.includes(state.searchKeyword)),
         filteredTodayPost: state => state.publicPosts.filter(post => DateUtil.isToday(post.date)).filter(post => post.text.includes(state.searchKeyword)),
         filteredAllPost: state => state.publicPosts.filter(post => post.text.includes(state.searchKeyword)),

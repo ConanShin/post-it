@@ -34,11 +34,13 @@
         }
 
         editPost() {
+            this.$store.commit('disableSearch')
             this.editable = true
             this.newText = this.post.text
         }
 
         savePost() {
+            this.$store.commit('enableSearch')
             this.editable = false
             if (confirm('저장 하시겠습니까?')) {
                 const newPost = {

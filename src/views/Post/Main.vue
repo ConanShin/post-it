@@ -5,7 +5,7 @@
                 <img class="user-image" :src="userImage"/>
                 <div class="user-name">{{userName}}</div>
             </div>
-            <input class="search-bar" v-model="searchKeyword" @keyup="setKeyword" placeholder="키워드 검색"/>
+            <input class="search-bar" v-model="keyword" placeholder="키워드 검색" :disabled="disableSearch"/>
             <div class="logout-button" @click="logout">
                 EXIT
                 <img src="@/assets/logout.png"/>
@@ -31,7 +31,6 @@
         components: {Tabs, PrivatePost, TodayPost, AllPost}
     })
     export default class Main extends Vue {
-        searchKeyword = ''
         userName = SessionStorage.user().name
         userImage = SessionStorage.user().image
         tabs = [
@@ -40,6 +39,17 @@
             {label: 'All'}
         ]
         originalHeights = null
+
+        get disableSearch() {
+            return this.$store.getters.disabledSearch
+        }
+
+        get keyword() {
+            return this.$store.getters.searchKeyword
+        }
+        set keyword(value) {
+            this.$store.commit('setSearchKeyword', value)
+        }
 
         get refreshTrigger() {
             console.log('refresh data changed')
@@ -50,10 +60,6 @@
 
         async beforeMount() {
             await this.$store.dispatch('fetchPosts')
-        }
-
-        setKeyword() {
-            this.$store.commit('setSearchKeyword', this.searchKeyword)
         }
 
         logout() {
