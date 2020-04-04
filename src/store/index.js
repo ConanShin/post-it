@@ -14,14 +14,17 @@ axios.defaults.baseURL = 'http://postit.conanshin.tech:5002/'
 export default new Vuex.Store({
     state: {
         searchKeyword: '',
-        posts: []
+        myPosts: [],
+        publicPosts: []
     },
     mutations: {
         setSearchKeyword: (state, payload) => {
             state.searchKeyword = payload
         },
         setPosts: (state, payload) => {
-            state.posts = payload
+            console.log(payload)
+            state.myPosts = payload.myPosts
+            state.publicPosts = payload.publicPosts
         },
         addPost: (state, payload) => {
             state.posts.push(payload)
@@ -54,6 +57,7 @@ export default new Vuex.Store({
         },
         fetchPosts: async store => {
             try {
+                axios.defaults.headers['user-id'] = SessionStorage.user().id
                 const {data} = await axios.get('/posts')
                 store.commit('setPosts', data)
             } catch (error) {
@@ -64,7 +68,8 @@ export default new Vuex.Store({
     modules: {
     },
     getters: {
-        filteredTodayPost: state => state.posts.filter(post => DateUtil.isToday(post.date)).filter(post => post.text.includes(state.searchKeyword)),
-        filteredAllPost: state => state.posts.filter(post => post.text.includes(state.searchKeyword)),
+        filteredPrivatePost: state => state.myPosts.filter(post => post.text.includes(state.searchKeyword)),
+        filteredTodayPost: state => state.publicPosts.filter(post => DateUtil.isToday(post.date)).filter(post => post.text.includes(state.searchKeyword)),
+        filteredAllPost: state => state.publicPosts.filter(post => post.text.includes(state.searchKeyword)),
     }
 })

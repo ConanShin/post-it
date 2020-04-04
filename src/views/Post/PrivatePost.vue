@@ -2,7 +2,7 @@
     <div class="private-post">
         <h3>Private Post</h3><div @click="showAddPost" class="button">+</div>
         <article class="post-it-area">
-            <template v-for="post in todayPost">
+            <template v-for="post in privatePost">
                 <post-it :post="post"></post-it>
             </template>
         </article>
@@ -27,8 +27,8 @@
             visible: false,
             text: ''
         }
-        get todayPost () {
-            return this.$store.getters.filteredTodayPost
+        get privatePost () {
+            return this.$store.getters.filteredPrivatePost
         }
         resetNewPost () {
             this.newPost.visible = false

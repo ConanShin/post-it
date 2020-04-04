@@ -1,8 +1,9 @@
 <template>
     <div class="main">
         <input class="search-bar" v-model="searchKeyword" @keyup="setKeyword" placeholder="키워드 검색"/>
+        <img class="user-image" :src="userImage"/>
         <div class="user-name">{{userName}}</div>
-        <div class="logout-button" @click="logout">Logout</div>
+        <img class="logout-button" @click="logout" src="https://chefhci.files.wordpress.com/2014/12/lgout.png"/>
         <tabs :tabs="tabs">
             <private-post></private-post>
             <today-post></today-post>
@@ -25,6 +26,7 @@
     export default class Main extends Vue {
         searchKeyword = ''
         userName = SessionStorage.user().name
+        userImage = SessionStorage.user().image
         tabs = [
             {label: 'Private'},
             {label: 'Today'},
@@ -62,19 +64,23 @@
         display: inline-block;
         float: left;
         margin-top: 18px;
-        margin-left: 18px;
+        margin-left: 13px;
         color: gray;
         font-size: 15px;
     }
+    .user-image {
+        float: left;
+        height: 54px;
+        border-radius: 30px;
+        margin-left: 15px;
+    }
+
     .logout-button {
-        display: inline-block;
+        height: 23px;
         float: right;
         margin-right: 18px;
         cursor: pointer;
-        border: 1px solid darkgrey;
-        padding: 5px 15px;
         border-radius: 10px;
-        margin-top: 13px;
-        font-size: 12px;
+        margin-top: 14px;
     }
 </style>
