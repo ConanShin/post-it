@@ -24,11 +24,11 @@
 </script>
 
 <style scoped lang="scss">
+    @import "@/utils/Common.scss";
     h3 {
         display: inline-block;
     }
     .post-it-area {
-        display: flex;
-        flex-wrap: wrap;
+        @include post-it-area;
     }
 </style>

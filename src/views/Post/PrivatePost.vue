@@ -48,12 +48,13 @@
 </script>
 
 <style scoped lang="scss">
+    @import "@/utils/Common.scss";
+
     h3 {
         display: inline-block;
     }
     .post-it-area {
-        display: flex;
-        flex-wrap: wrap;
+        @include post-it-area;
     }
 
     .new-post {
@@ -65,15 +66,11 @@
             display: inline-block;
             width: 200px;
             height: 200px;
-            background: lightgoldenrodyellow;
-            font-size: 14px;
             margin: 5px;
-            white-space: pre-wrap;
-            text-align: left;
-            padding: 35px 15px 15px 15px;
-            border: none;
             box-shadow: 8px 8px 7px 7px rosybrown;
-            resize: none;
+            padding: 35px 15px 15px 15px;
+
+            @include post-it;
         }
 
         .close-add-post {

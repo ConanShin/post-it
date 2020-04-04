@@ -64,12 +64,13 @@
 </script>
 
 <style scoped lang="scss">
+    @import "@/utils/Common.scss";
     .post-it {
+        @include post-it;
         margin: 5px;
         display: flex;
         flex-direction: column;
         background: lightgoldenrodyellow;
-        font-size: 13px;
         padding: 13px;
         box-shadow: 6px 6px 5px 0px rosybrown
     }
@@ -82,27 +83,11 @@
             height: 13px;
             cursor: pointer;
             padding: 3px;
-            border: 1px solid rgba(0,0,0,0.1);
-            box-shadow:
-                    inset 0 2px 3px rgba(255,255,255,0.3),
-                    inset 0 -2px 3px rgba(0,0,0,0.3),
-                    0 1px 1px rgba(255,255,255,0.9);
             margin-left: 2px;
+            @include embossed-button;
         }
 
-        .edit-button {
-            float: right;
-        }
-
-        .publish-button {
-            float: right;
-        }
-
-        .save-button {
-            float: right;
-        }
-
-        .delete-button {
+        .edit-button, .publish-button, .save-button, .delete-button {
             float: right;
         }
     }
@@ -114,15 +99,10 @@
         text-align: left;
         overflow-y: auto;
         word-break: break-all;
+        padding: 0;
 
         &.editable {
-            background: lightgoldenrodyellow;
-            font-size: 13px;
-            white-space: pre-wrap;
-            text-align: left;
-            border: none;
-            resize: none;
-            padding: 0;
+            @include post-it;
         }
     }
 
