@@ -66,7 +66,7 @@
                 const selectedTab = Array.from(document.querySelectorAll('.title-item')).findIndex(item => item.classList.contains('active'))
                 if (!this.originalHeights) this.originalHeights = Array.from(document.querySelectorAll('.post-it-area')).map(page => page.scrollHeight)
                 document.querySelectorAll('.post-it-area').forEach(page => {
-                    page.style.height = this.originalHeights[selectedTab] + 'px'
+                    page.style.height = (this.originalHeights[selectedTab] + 10) + 'px'
                     page.style.overflow = 'hidden'
                 })
             }, 100)
@@ -94,7 +94,6 @@
     }
 
     .tabs-content {
-
         overflow-y: auto !important;
         overflow-x: hidden !important;
     }
@@ -115,7 +114,6 @@
     .page {
         display: inline-table !important;
         width: 100%;
-        height: 100%;
         font-size: 14px;
         margin-bottom: 10px;
     }

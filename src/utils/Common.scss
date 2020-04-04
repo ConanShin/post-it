@@ -1,8 +1,5 @@
 @mixin post-it-area {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  //transition: height .3s ease-in-out;
+  display: block;
 }
 
 @mixin post-it {
