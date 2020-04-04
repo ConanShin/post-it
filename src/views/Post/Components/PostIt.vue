@@ -1,7 +1,7 @@
 <template>
     <div class="post-it">
         <div class="menu">
-            <img src="@/assets/trashcan.png"/>
+            <img class="delete-button" @click="deletePost" src="@/assets/trashcan.png"/>
         </div>
         <div class="text-area">
             {{post.text}}
@@ -16,6 +16,12 @@
     @Component
     export default class PostIt extends Vue {
         @Prop() post
+
+        deletePost() {
+            if(confirm('정말 삭제하시겠습니까?')) {
+                this.$store.dispatch('deletePost', this.post.uid)
+            }
+        }
     }
 </script>
 
@@ -27,11 +33,16 @@
         background: lightgoldenrodyellow;
         font-size: 13px;
         padding: 13px;
+        box-shadow: 6px 6px 5px 0px rosybrown
+    }
+    .delete-button {
+        height: 16px;
+        float: right;
+        cursor: pointer;
     }
     .text-area {
-        width: 200px;
+        width: 230px;
         height: 200px;
-        padding: 15px 15px 0 15px;
         white-space: pre-wrap;
         text-align: left;
         overflow-y: auto;

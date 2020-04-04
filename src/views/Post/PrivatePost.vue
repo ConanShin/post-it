@@ -8,7 +8,7 @@
         </article>
 
         <div v-if="newPost.visible" class="new-post">
-            <textarea class="new-post-it" v-model="newPost.text"></textarea>
+            <textarea v-model="newPost.text"></textarea>
             <div @click="saveNewPost" class="save-new-post button">save</div>
             <div @click="closeAddPost" class="close-add-post button">cancel</div>
         </div>
@@ -38,7 +38,7 @@
             this.newPost.visible = true
         }
         closeAddPost () {
-            this.newPost.visible = false
+            this.resetNewPost()
         }
         saveNewPost () {
             this.$store.dispatch('newPost', this.newPost.text)
@@ -56,29 +56,26 @@
         flex-wrap: wrap;
     }
 
-    .new-post-it {
-        display: inline-block;
-        width: 200px;
-        height: 200px;
-        background: lightgoldenrodyellow;
-        font-size: 14px;
-        padding: 15px 15px 30px 15px;
-        margin: 5px;
-        white-space: pre-wrap;
-        text-align: left;
-    }
-
     .new-post {
         position: absolute;
         top: 25vh;
         left: 25vw;
 
         textarea {
+            display: inline-block;
+            width: 200px;
+            height: 200px;
+            background: lightgoldenrodyellow;
+            font-size: 14px;
+            margin: 5px;
+            white-space: pre-wrap;
+            text-align: left;
             padding: 35px 15px 15px 15px;
             border: none;
-            box-shadow: 5px 4px 11px 6px gray;
+            box-shadow: 8px 8px 7px 7px rosybrown;
             resize: none;
         }
+
         .close-add-post {
             position: absolute;
             top: 10px;

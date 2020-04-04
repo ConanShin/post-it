@@ -10,6 +10,12 @@ Vue.use(Vuex)
 
 axios.defaults.baseURL = 'http://postit.conanshin.tech:5002/'
 // axios.defaults.baseURL = 'http://localhost:5002/'
+axios.interceptors.request.use(config => {
+    config.headers['user-id'] = SessionStorage.user().id
+    return config
+}, error => {
+    console.log(error)
+})
 
 export default new Vuex.Store({
     state: {
@@ -35,7 +41,6 @@ export default new Vuex.Store({
             await KakaoConnector.login()
             const user = await KakaoConnector.fetchUserInfo()
             SessionStorage.save('user', user)
-            store.dispatch('updateUser')
             VueRouter.push({name: 'Post'})
         },
         logout: async store => {
@@ -48,25 +53,19 @@ export default new Vuex.Store({
             await axios.post('/user', {id, name})
         },
         newPost: async (store, text) => {
-            try {
-                const response = await axios.post('/posts', {id: SessionStorage.user().id, text})
-                store.dispatch('fetchPosts')
-            } catch (error) {
-                console.log(error)
-            }
+            await axios.post('/post', {id: SessionStorage.user().id, text})
+            store.dispatch('fetchPosts')
+        },
+        deletePost: async (store, postId) => {
+            await axios.delete(`/post/${postId}`)
+            store.dispatch('fetchPosts')
         },
         fetchPosts: async store => {
-            try {
-                axios.defaults.headers['user-id'] = SessionStorage.user().id
-                const {data} = await axios.get('/posts')
-                store.commit('setPosts', data)
-            } catch (error) {
-                console.log(error)
-            }
+            const {data} = await axios.get('/posts')
+            store.commit('setPosts', data)
         }
     },
-    modules: {
-    },
+    modules: {},
     getters: {
         filteredPrivatePost: state => state.myPosts.filter(post => post.text.includes(state.searchKeyword)),
         filteredTodayPost: state => state.publicPosts.filter(post => DateUtil.isToday(post.date)).filter(post => post.text.includes(state.searchKeyword)),
