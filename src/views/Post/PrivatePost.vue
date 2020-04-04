@@ -2,7 +2,9 @@
     <div class="private-post">
         <h3>Private Post</h3><div @click="showAddPost" class="button">+</div>
         <article class="post-it-area">
-            <div class="post-it" v-for="post in todayPost">{{post.text}}</div>
+            <template v-for="post in todayPost">
+                <post-it :post="post"></post-it>
+            </template>
         </article>
 
         <div v-if="newPost.visible" class="new-post">
@@ -15,8 +17,11 @@
 
 <script>
     import {Vue, Component} from 'vue-property-decorator'
+    import PostIt from './Components/PostIt'
 
-    @Component
+    @Component({
+        components: {PostIt}
+    })
     export default class PrivatePost extends Vue {
         newPost = {
             visible: false,
@@ -50,13 +55,14 @@
         display: flex;
         flex-wrap: wrap;
     }
+
     .post-it {
         display: inline-block;
         width: 200px;
         height: 200px;
         background: lightgoldenrodyellow;
         font-size: 14px;
-        padding: 15px;
+        padding: 15px 15px 30px 15px;
         margin: 5px;
         white-space: pre-wrap;
         text-align: left;

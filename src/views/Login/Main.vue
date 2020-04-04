@@ -1,7 +1,7 @@
 <template>
     <div class="main">
-        Post It Login Page
-        <button @click="login">Login</button>
+        Post It
+        <div class="login-button" @click="login">Login with Kakao</div>
     </div>
 </template>
 
@@ -10,32 +10,26 @@
 
     @Component
     export default class Main extends Vue {
-        beforeMount() {
-            Kakao.init('8d154019fab779af4bff62678b0a6eb6')
-        }
-
         login() {
-            Kakao.Auth.login({
-                success: function(response) {
-                    console.log(response);
-                },
-                fail: function(error) {
-                    console.log(error);
-                }
-            })
-        }
-
-        mounted() {
+            this.$store.dispatch('login')
         }
     }
 </script>
 
-<style lang="scss">
-    #app {
-        font-family: Avenir, Helvetica, Arial, sans-serif;
-        -webkit-font-smoothing: antialiased;
-        -moz-osx-font-smoothing: grayscale;
-        text-align: center;
-        color: #2c3e50;
+<style scoped lang="scss">
+    .main {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        height: 100vh;
+    }
+
+    .login-button {
+        cursor: pointer;
+        border: 1px solid darkgrey;
+        padding: 5px 15px;
+        border-radius: 10px;
+        margin-top: 10px;
     }
 </style>

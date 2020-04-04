@@ -2,6 +2,9 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import axios from 'axios'
 import DateUtil from '../utils/Date'
+import VueRouter from '../router'
+import KakaoConnector from '@/utils/Kakao'
+import SessionStorage from '@/utils/SessionStorage'
 
 Vue.use(Vuex)
 
@@ -25,9 +28,25 @@ export default new Vuex.Store({
         }
     },
     actions: {
-        newPost: async (store, payload) => {
+        login: async (store) => {
+            await KakaoConnector.login()
+            const user = await KakaoConnector.fetchUserInfo()
+            SessionStorage.save('user', user)
+            store.dispatch('updateUser')
+            VueRouter.push({name: 'Post'})
+        },
+        logout: async store => {
+            await KakaoConnector.logout()
+            SessionStorage.flush()
+            VueRouter.push({name: 'Login'})
+        },
+        updateUser: async store => {
+            const {id, name} = SessionStorage.user()
+            await axios.post('/user', {id, name})
+        },
+        newPost: async (store, text) => {
             try {
-                const response = await axios.post('posts', {text: payload})
+                const response = await axios.post('/posts', {id: SessionStorage.user().id, text})
                 store.dispatch('fetchPosts')
             } catch (error) {
                 console.log(error)
