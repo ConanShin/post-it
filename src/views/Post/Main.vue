@@ -3,7 +3,10 @@
         <input class="search-bar" v-model="searchKeyword" @keyup="setKeyword" placeholder="키워드 검색"/>
         <img class="user-image" :src="userImage"/>
         <div class="user-name">{{userName}}</div>
-        <img class="logout-button" @click="logout" src="https://chefhci.files.wordpress.com/2014/12/lgout.png"/>
+        <div class="logout-button" @click="logout">
+            EXIT
+            <img src="@/assets/logout.png"/>
+        </div>
         <tabs :tabs="tabs">
             <private-post></private-post>
             <today-post></today-post>
@@ -78,11 +81,15 @@
     }
 
     .logout-button {
+        display: flex;
         height: 23px;
         float: right;
         margin-right: 18px;
         cursor: pointer;
-        border-radius: 10px;
-        margin-top: 14px;
+        margin-top: 17px;
+
+        img {
+            margin-left: 4px;
+        }
     }
 </style>

@@ -1,5 +1,8 @@
 <template>
     <div class="post-it">
+        <div class="menu">
+            <img src="@/assets/trashcan.png"/>
+        </div>
         <div class="text-area">
             {{post.text}}
         </div>
