@@ -69,7 +69,7 @@
         setScrollHeight() {
             setTimeout(() => {
                 document.querySelectorAll('.post-it-area').forEach(page => {
-                    page.style.height = (this.originalHeights[this.selectedTabIndex]git ) + 'px'
+                    page.style.height = this.originalHeights[this.selectedTabIndex] + 'px'
                     page.style.overflow = 'hidden'
                 })
             }, 500)
