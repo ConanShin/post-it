@@ -32,6 +32,7 @@
         white-space: pre-wrap;
         text-align: left;
         overflow-y: auto;
+        word-break: break-all;
     }
     .author {
         text-align: right;

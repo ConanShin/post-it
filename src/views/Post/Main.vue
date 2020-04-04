@@ -50,6 +50,8 @@
 <style lang="scss">
     .tabs-content {
         height: calc(100vh - 114px) !important;
+        overflow-y: auto !important;
+        overflow-x: hidden !important;
     }
 </style>
 <style scoped lang="scss">
