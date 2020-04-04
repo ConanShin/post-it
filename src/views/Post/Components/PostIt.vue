@@ -1,9 +1,12 @@
 <template>
     <div class="post-it">
         <div class="menu">
-            <img class="delete-button" @click="deletePost" src="@/assets/trashcan.png"/>
-            <img v-if="editable" class="save-button" @click="savePost" src="@/assets/document-check.png"/>
-            <img v-else class="edit-button" @click="editPost" src="@/assets/pencil.png"/>
+            <template v-if="isMyPost">
+                <img class="delete-button" @click="deletePost" src="@/assets/trashcan.png"/>
+                <img v-if="!editable&&!isPublished" class="publish-button" @click="publishPost" src="@/assets/plane.png"/>
+                <img v-if="editable" class="save-button" @click="savePost" src="@/assets/document-check.png"/>
+                <img v-if="!editable" class="edit-button" @click="editPost" src="@/assets/pencil.png"/>
+            </template>
         </div>
         <textarea v-if="editable" v-model="newText" class="editable text-area"></textarea>
         <div v-else class="text-area">
@@ -15,12 +18,20 @@
 
 <script>
     import {Vue, Component, Prop} from 'vue-property-decorator'
+    import SessionStorage from "@/utils/SessionStorage";
 
     @Component
     export default class PostIt extends Vue {
         @Prop() post
         editable = false
         newText = ''
+
+        get isMyPost() {
+            return this.post.user_id === SessionStorage.user().id.toString()
+        }
+        get isPublished() {
+            return this.post.private_yn === 'n'
+        }
 
         editPost() {
             this.editable = true
@@ -35,6 +46,12 @@
                     text: this.newText
                 }
                 this.$store.dispatch('updatePost', newPost)
+            }
+        }
+
+        publishPost() {
+            if(confirm('공유 하시겠습니까?')) {
+                this.$store.dispatch('publishPost', this.post.uid)
             }
         }
 
@@ -58,30 +75,42 @@
     }
 
     .menu {
+        height: 21px;
         margin-bottom: 5px;
 
-        .delete-button, .edit-button, .save-button {
-            height: 16px;
+        .delete-button, .edit-button, .save-button, .publish-button {
+            height: 13px;
             cursor: pointer;
+            padding: 3px;
+            border: 1px solid rgba(0,0,0,0.1);
+            box-shadow:
+                    inset 0 2px 3px rgba(255,255,255,0.3),
+                    inset 0 -2px 3px rgba(0,0,0,0.3),
+                    0 1px 1px rgba(255,255,255,0.9);
+            margin-left: 2px;
         }
 
         .edit-button {
-            float: left
+            float: right;
+        }
+
+        .publish-button {
+            float: right;
         }
 
         .save-button {
-            float: left
+            float: right;
         }
 
         .delete-button {
-            float: right
+            float: right;
         }
     }
 
     .text-area {
         width: 230px;
         height: 200px;
-        white-space: pre-wrap;
+        white-space: pre-line;
         text-align: left;
         overflow-y: auto;
         word-break: break-all;
@@ -93,6 +122,7 @@
             text-align: left;
             border: none;
             resize: none;
+            padding: 0;
         }
     }
 

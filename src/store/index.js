@@ -56,6 +56,10 @@ export default new Vuex.Store({
             await axios.post('/post', {text})
             store.dispatch('fetchPosts')
         },
+        publishPost: async (store, postId) => {
+            await axios.put(`/post/publish/${postId}`)
+            store.dispatch('fetchPosts')
+        },
         updatePost: async (store, post) => {
             await axios.put(`/post/${post.postId}`, {text: post.text})
             store.dispatch('fetchPosts')
