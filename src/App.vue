@@ -21,7 +21,7 @@
         color: #2c3e50;
         height: 100%;
     }
-    html, body {
+    html, body, .main {
         height: 100%;
         overflow-y: hidden;
         margin: 0;

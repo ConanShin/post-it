@@ -12,9 +12,9 @@
             </div>
         </nav>
         <tabs @change="setScroll" :tabs="tabs">
-            <private-post :key="refreshTrigger + '1'" class="page"></private-post>
-            <today-post :key="refreshTrigger + '2'" class="page"></today-post>
-            <all-post :key="refreshTrigger + '3'" class="page"></all-post>
+            <private-post class="page"></private-post>
+            <today-post class="page"></today-post>
+            <all-post class="page"></all-post>
         </tabs>
     </div>
 </template>
@@ -47,15 +47,9 @@
         get keyword() {
             return this.$store.getters.searchKeyword
         }
+
         set keyword(value) {
             this.$store.commit('setSearchKeyword', value)
-        }
-
-        get refreshTrigger() {
-            console.log('refresh data changed')
-            this.originalHeights = null
-            this.setScroll()
-            return this.$store.getters.refreshTrigger
         }
 
         async beforeMount() {
@@ -65,63 +59,34 @@
         logout() {
             this.$store.dispatch('logout')
         }
-
-        setScroll() {
-            setTimeout(() => {
-                document.querySelector('.tabs-content').scrollTop = 0
-                const selectedTab = Array.from(document.querySelectorAll('.title-item')).findIndex(item => item.classList.contains('active'))
-                if (!this.originalHeights) this.originalHeights = Array.from(document.querySelectorAll('.post-it-area')).map(page => page.scrollHeight)
-                document.querySelectorAll('.post-it-area').forEach(page => {
-                    page.style.height = (this.originalHeights[selectedTab] + 10) + 'px'
-                    page.style.overflow = 'hidden'
-                })
-            }, 100)
-        }
     }
 </script>
 
 <style lang="scss">
     @import '@/utils/MediaQuery.scss';
 
-    .tabs {
+    .tabs, .tabs-content, .tabs-content > .wrapper {
         height: 100%;
-    }
-
-    @include mobile {
-        .tabs-content {
-            height: calc(100% - 81px) !important;
-        }
-    }
-
-    @include desktop {
-        .tabs-content {
-            height: calc(100% - 98px) !important;
-        }
-    }
-
-    .tabs-content {
-        overflow-y: auto !important;
-        overflow-x: hidden !important;
     }
 </style>
 <style scoped lang="scss">
     @import '@/utils/MediaQuery.scss';
 
-    .main {
-        height: 100%;
-    }
-
     nav {
         display: flex;
         align-items: center;
         justify-content: space-between;
+        padding: 10px;
     }
 
     .page {
-        display: inline-table !important;
+        display: inline-block !important;
+        height: 100%;
         width: 100%;
         font-size: 14px;
         margin-bottom: 10px;
+        overflow-x: hidden;
+        overflow-y: auto;
     }
 
     @include mobile {

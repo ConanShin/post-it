@@ -20,6 +20,9 @@
         get todayPost () {
             return this.$store.getters.filteredTodayPost
         }
+        mounted() {
+            console.log('mounted')
+        }
     }
 </script>
 

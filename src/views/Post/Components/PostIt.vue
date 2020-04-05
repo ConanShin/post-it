@@ -3,12 +3,12 @@
         <div class="menu">
             <template v-if="isMyPost">
                 <img class="delete-button" @click="deletePost" src="@/assets/trashcan.png"/>
-                <img v-if="!editable&&!isPublished" class="publish-button" @click="publishPost" src="@/assets/plane.png"/>
-                <img v-if="editable" class="save-button" @click="savePost" src="@/assets/document-check.png"/>
-                <img v-if="!editable" class="edit-button" @click="editPost" src="@/assets/pencil.png"/>
+                <img v-if="!post.editable&&!isPublished" class="publish-button" @click="publishPost" src="@/assets/plane.png"/>
+                <img v-if="post.editable" class="save-button" @click="savePost" src="@/assets/document-check.png"/>
+                <img v-if="!post.editable" class="edit-button" @click="editPost" src="@/assets/pencil.png"/>
             </template>
         </div>
-        <textarea v-if="editable" v-model="newText" class="editable text-area"></textarea>
+        <textarea v-if="post.editable" v-model="post.newNote" class="editable text-area"></textarea>
         <div v-else class="text-area">
             {{post.text}}
         </div>
@@ -23,8 +23,6 @@
     @Component
     export default class PostIt extends Vue {
         @Prop() post
-        editable = false
-        newText = ''
 
         get isMyPost() {
             return this.post.user_id === SessionStorage.user().id.toString()
@@ -35,30 +33,28 @@
 
         editPost() {
             this.$store.commit('disableSearch')
-            this.editable = true
+            this.post.editable = true
             this.newText = this.post.text
         }
 
         savePost() {
             this.$store.commit('enableSearch')
-            this.editable = false
+            this.post.editable = false
             if (confirm('저장 하시겠습니까?')) {
-                const newPost = {
-                    postId: this.post.uid,
-                    text: this.newText
-                }
-                this.$store.dispatch('updatePost', newPost)
+                this.$store.dispatch('updatePost', this.post)
+            } else {
+                this.post.newNote = this.post.text
             }
         }
 
         publishPost() {
-            if(confirm('공유 하시겠습니까?\n수정중인 다른 포스트잇 내용은 리셋됩니다.')) {
+            if(confirm('공유 하시겠습니까?')) {
                 this.$store.dispatch('publishPost', this.post.uid)
             }
         }
 
         deletePost() {
-            if (confirm('삭제 하시겠습니까?\n수정중인 다른 포스트잇 내용은 리셋됩니다.')) {
+            if (confirm('삭제 하시겠습니까?')) {
                 this.$store.dispatch('deletePost', this.post.uid)
             }
         }
