@@ -79,10 +79,9 @@
     }
 
     .page {
-        display: inline-grid !important;
+        display: inline-table !important;
         margin-bottom: 10px;
-        overflow-x: hidden;
-        overflow-y: auto;
+        height: 100%;
     }
 
     @include mobile {
@@ -90,8 +89,6 @@
             font-size: 12px;
             height: 15px;
             border: 1px solid gray;
-            border-radius: 5px;
-            margin-right: 15px;
         }
         .user-name {
             font-size: 12px;
@@ -126,6 +123,8 @@
 
     .search-bar {
         width: 50%;
+        border-radius: 5px;
+        margin-right: 15px;
         color: darkslategray;
         padding: 10px;
     }

@@ -2,7 +2,9 @@
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  padding-bottom: 63px;
+  overflow-x: hidden;
+  overflow-y: auto;
+  height: 80vh;
 }
 
 @mixin post-it {
