@@ -1,7 +1,9 @@
 <template>
     <div class="private-post">
-        <h3>Private Post</h3>
-        <div @click="showAddPost" class="button">+</div>
+        <div>
+            <h3>Private Post</h3>
+            <div @click="showAddPost" class="button">+</div>
+        </div>
         <article class="post-it-area">
             <template v-for="post in privatePost">
                 <post-it :post="post"></post-it>

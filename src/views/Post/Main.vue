@@ -64,7 +64,6 @@
 
 <style lang="scss">
     @import '@/utils/MediaQuery.scss';
-
     .tabs, .tabs-content, .tabs-content > .wrapper {
         height: 100%;
     }
@@ -80,10 +79,7 @@
     }
 
     .page {
-        display: inline-block !important;
-        height: 100%;
-        width: 100%;
-        font-size: 14px;
+        display: inline-grid !important;
         margin-bottom: 10px;
         overflow-x: hidden;
         overflow-y: auto;
