@@ -72,12 +72,10 @@
         margin: 5px;
         display: flex;
         flex-direction: column;
-        background: lightgoldenrodyellow;
         padding: 13px;
         box-shadow: 6px 6px 5px 0px rosybrown;
         max-height: 244px;
         max-width: 230px;
-        margin: 10px auto;
     }
 
     .menu {
