@@ -11,7 +11,7 @@
                 <img src="@/assets/logout.png"/>
             </div>
         </nav>
-        <tabs @change="setScroll" :tabs="tabs">
+        <tabs :tabs="tabs">
             <private-post class="page"></private-post>
             <today-post class="page"></today-post>
             <all-post class="page"></all-post>
