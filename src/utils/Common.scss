@@ -1,10 +1,14 @@
+$nav-height-mobile: 57px;
+$nav-height-desktop: 74px;
+$tabs-height: 44px;
+$tabs-title-height: 55px;
 @mixin post-it-area {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
   overflow-x: hidden;
   overflow-y: auto;
-  height: 80vh;
+  height: 100%;
 }
 
 @mixin post-it {

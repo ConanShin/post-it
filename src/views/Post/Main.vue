@@ -63,28 +63,51 @@
 </script>
 
 <style lang="scss">
+    @import '@/utils/Common.scss';
     @import '@/utils/MediaQuery.scss';
-    .tabs, .tabs-content, .tabs-content > .wrapper {
+
+    @include mobile {
+        .tabs {
+            height: calc(100% - #{$nav-height-mobile})
+        }
+    }
+
+    @include desktop {
+        .tabs {
+            height: calc(100% - #{$nav-height-desktop})
+        }
+    }
+    .tabs-content {
+        height: calc(100% - #{$tabs-height})
+    }
+    .tabs-content > .wrapper {
         height: 100%;
+    }
+
+    .post-it:last-child {
+        margin-bottom: 30px;
     }
 </style>
 <style scoped lang="scss">
+    @import '@/utils/Common.scss';
     @import '@/utils/MediaQuery.scss';
 
     nav {
         display: flex;
         align-items: center;
         justify-content: space-between;
-        padding: 10px;
+        padding: 0 10px;
     }
 
     .page {
-        display: inline-table !important;
-        margin-bottom: 10px;
-        height: 100%;
+        /*display: inline-table !important;*/
+        height: calc(100% - #{$tabs-height}) !important;
     }
 
     @include mobile {
+        nav {
+            height: $nav-height-mobile;
+        }
         .search-bar {
             font-size: 12px;
             height: 15px;
@@ -104,6 +127,9 @@
     }
 
     @include desktop {
+        nav {
+            height: $nav-height-desktop;
+        }
         .search-bar {
             font-size: 20px;
             height: 30px;
