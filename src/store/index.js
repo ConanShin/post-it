@@ -96,7 +96,7 @@ export default new Vuex.Store({
             store.commit('removePost', postId)
         },
         fetchPosts: async store => {
-            const {data} = await axios.get('/posts')
+            const {data} = await axios.get('/post/list')
             store.commit('setPosts', data)
         }
     },
