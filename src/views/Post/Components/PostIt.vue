@@ -25,7 +25,8 @@
         @Prop() post
 
         get currentColor() {
-            return this.$store.getters.postColor
+            if (this.post.name === '나') return this.$store.getters.postColor
+            else return SessionStorage.load('colors').find(color => color.name === this.post.name).color
         }
 
         get isMyPost() {

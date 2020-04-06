@@ -8,8 +8,8 @@
             <post-it v-for="post in privatePost" :post="post" :key="'private-' + post.uid"></post-it>
         </article>
 
-        <div v-if="newPost.visible" class="new-post">
-            <textarea v-model="newPost.text"></textarea>
+        <div v-if="newPost.visible" class="new-post" :style="{'background-color': currentColor}">
+            <textarea v-model="newPost.text" :style="{'background-color': currentColor}"></textarea>
             <div @click="saveNewPost" class="save-new-post button">save</div>
             <div @click="closeAddPost" class="close-add-post button">cancel</div>
         </div>
@@ -27,6 +27,10 @@
         newPost = {
             visible: false,
             text: ''
+        }
+
+        get currentColor() {
+            return this.$store.getters.postColor
         }
 
         get privatePost() {

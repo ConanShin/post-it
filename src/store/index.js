@@ -21,7 +21,7 @@ export default new Vuex.Store({
     state: {
         disabledSearch: false,
         searchKeyword: '',
-        postColor: SessionStorage.load('color') || '#FFFFFF',
+        postColor: SessionStorage.load('myColor') || '#FFFFFF',
         myPosts: [],
         othersPosts: [],
     },
@@ -55,7 +55,6 @@ export default new Vuex.Store({
             state.myPosts.find(post => post.uid === postId).private_yn = 'n'
         },
         addPost: (state, post) => {
-            post.name = '나'
             post.newNote = post.text
             post.editable = false
             state.myPosts.push(post)
@@ -69,7 +68,6 @@ export default new Vuex.Store({
         login: async (store) => {
             await KakaoConnector.login()
             const user = await KakaoConnector.fetchUserInfo()
-
             store.dispatch('updateUser', user)
             VueRouter.push({name: 'Post'})
         },
@@ -81,14 +79,16 @@ export default new Vuex.Store({
         },
         updateColor: async (store, color) => {
             await axios.put('/user/color', {color})
-            SessionStorage.save('color', color)
+            SessionStorage.save('myColor', color)
         },
         updateUser: async (store, user) => {
             SessionStorage.save('user', user)
             const {name} = SessionStorage.user()
             const {data} = await axios.post('/user', {name})
-            store.commit('changePostColor', data.color)
-            SessionStorage.save('color', data.color)
+            SessionStorage.save('colors', data)
+            const myColor = data.find(item => item.name === SessionStorage.user().name).color
+            SessionStorage.save('myColor', myColor)
+            store.commit('changePostColor', myColor)
         },
         newPost: async (store, text) => {
             const {data} = await axios.post('/post', {text})
