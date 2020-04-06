@@ -87,6 +87,7 @@ export default new Vuex.Store({
             SessionStorage.save('user', user)
             const {name} = SessionStorage.user()
             const {data} = await axios.post('/user', {name})
+            store.commit('changePostColor', data.color)
             SessionStorage.save('color', data.color)
         },
         newPost: async (store, text) => {
