@@ -14,7 +14,7 @@ axios.interceptors.request.use(config => {
     config.headers['user-id'] = SessionStorage.user().id
     return config
 }, error => {
-    console.log(error)
+    alert(error)
 })
 
 export default new Vuex.Store({

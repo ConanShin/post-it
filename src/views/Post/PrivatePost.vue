@@ -5,9 +5,7 @@
             <div @click="showAddPost" class="button">+</div>
         </div>
         <article class="post-it-area">
-            <template v-for="post in privatePost">
-                <post-it :post="post"></post-it>
-            </template>
+            <post-it v-for="post in privatePost" :post="post" :key="'private-' + post.uid"></post-it>
         </article>
 
         <div v-if="newPost.visible" class="new-post">

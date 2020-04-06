@@ -2,8 +2,8 @@
     <div class="today-post">
         <h3>Today Post</h3>
         <article class="post-it-area">
-            <template v-for="post in todayPost">
-                <post-it :post="post"></post-it>
+            <template>
+                <post-it v-for="post in todayPost" :post="post" :key="'today-' + post.uid"></post-it>
             </template>
         </article>
     </div>
