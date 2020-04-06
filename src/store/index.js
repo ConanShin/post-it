@@ -21,6 +21,7 @@ export default new Vuex.Store({
     state: {
         disabledSearch: false,
         searchKeyword: '',
+        postColor: SessionStorage.load('color') || '#FFFFFF',
         myPosts: [],
         othersPosts: [],
     },
@@ -33,6 +34,9 @@ export default new Vuex.Store({
         },
         setSearchKeyword: (state, payload) => {
             state.searchKeyword = payload
+        },
+        changePostColor: (state, payload) => {
+            state.postColor = payload
         },
         setPosts: (state, payload) => {
             state.myPosts = payload.myPosts.map(post => {
@@ -65,8 +69,8 @@ export default new Vuex.Store({
         login: async (store) => {
             await KakaoConnector.login()
             const user = await KakaoConnector.fetchUserInfo()
-            SessionStorage.save('user', user)
-            store.dispatch('updateUser')
+
+            store.dispatch('updateUser', user)
             VueRouter.push({name: 'Post'})
         },
         logout: async store => {
@@ -75,9 +79,15 @@ export default new Vuex.Store({
             VueRouter.push({name: 'Login'})
             location.reload() // reload 없으면 카카오 로그인이 Promise return을 하지 않는다..?
         },
-        updateUser: async store => {
+        updateColor: async (store, color) => {
+            await axios.put('/user/color', {color})
+            SessionStorage.save('color', color)
+        },
+        updateUser: async (store, user) => {
+            SessionStorage.save('user', user)
             const {name} = SessionStorage.user()
-            await axios.post('/user', {name})
+            const {data} = await axios.post('/user', {name})
+            SessionStorage.save('color', data.color)
         },
         newPost: async (store, text) => {
             const {data} = await axios.post('/post', {text})
@@ -104,6 +114,7 @@ export default new Vuex.Store({
     getters: {
         disabledSearch: state => state.disabledSearch,
         searchKeyword: state => state.searchKeyword,
+        postColor: state => state.postColor,
         filteredPrivatePost: state => {
             return state.myPosts
                 .filter(post => post.private_yn === 'y')

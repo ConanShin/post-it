@@ -83,7 +83,6 @@
         position: absolute;
         border-radius: 1px;
         box-shadow: 8px 8px 7px 7px rosybrown;
-        background: lightgoldenrodyellow;
         padding: 44px 15px 15px 15px;
 
         textarea {

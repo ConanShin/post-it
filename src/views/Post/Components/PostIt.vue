@@ -1,5 +1,5 @@
 <template>
-    <div class="post-it">
+    <div class="post-it" :style="{'background-color': currentColor}">
         <div class="menu">
             <template v-if="isMyPost">
                 <img class="delete-button" @click="deletePost" src="@/assets/trashcan.png"/>
@@ -23,6 +23,10 @@
     @Component
     export default class PostIt extends Vue {
         @Prop() post
+
+        get currentColor() {
+            return this.$store.getters.postColor
+        }
 
         get isMyPost() {
             return this.post.user_id === SessionStorage.user().id.toString()

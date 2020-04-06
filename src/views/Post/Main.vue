@@ -1,14 +1,17 @@
 <template>
     <div class="main">
         <nav>
-            <div class="user-info">
+            <div class="left-menu">
                 <img class="user-image" :src="userImage"/>
                 <div class="user-name">{{userName}}</div>
             </div>
             <input class="search-bar" v-model="keyword" placeholder="키워드 검색" :disabled="disableSearch"/>
-            <div class="logout-button" @click="logout">
-                EXIT
-                <img src="@/assets/logout.png"/>
+            <div class="right-menu">
+                <div class="current-color" :style="{'background-color': postColor}"></div>
+                <chrome class="color-picker" :value="postColor" @input="colorPicked"></chrome>
+                <div class="logout-button" @click="logout">
+                    EXIT<img src="@/assets/logout.png"/>
+                </div>
             </div>
         </nav>
         <tabs :tabs="tabs">
@@ -21,6 +24,7 @@
 
 <script>
     import {Vue, Component} from 'vue-property-decorator'
+    import { Chrome } from 'vue-color'
     import Tabs from "vue-slide-tabs"
     import PrivatePost from './PrivatePost'
     import AllPost from './AllPost'
@@ -28,17 +32,28 @@
     import SessionStorage from '@/utils/SessionStorage'
 
     @Component({
-        components: {Tabs, PrivatePost, TodayPost, AllPost}
+        components: {Chrome, Tabs, PrivatePost, TodayPost, AllPost}
     })
     export default class Main extends Vue {
         userName = SessionStorage.user().name
         userImage = SessionStorage.user().image
+        debounceFunction
         tabs = [
             {label: 'Private'},
             {label: 'Today'},
             {label: 'All'}
         ]
-        originalHeights = null
+
+        mounted() {
+            // this.$el.querySelector('.current-color').style.backgroundColor = this.color
+        }
+        async beforeMount() {
+            await this.$store.dispatch('fetchPosts')
+        }
+
+        get postColor() {
+            return this.$store.getters.postColor
+        }
 
         get disableSearch() {
             return this.$store.getters.disabledSearch
@@ -52,8 +67,12 @@
             this.$store.commit('setSearchKeyword', value)
         }
 
-        async beforeMount() {
-            await this.$store.dispatch('fetchPosts')
+        colorPicked(color) {
+            clearTimeout(this.debounceFunction)
+            this.debounceFunction = setTimeout(() => {
+                this.$store.commit('changePostColor', color.hex8)
+                this.$store.dispatch('updateColor', color.hex8)
+            }, 500)
         }
 
         logout() {
@@ -99,11 +118,6 @@
         padding: 0 10px;
     }
 
-    .page {
-        /*display: inline-table !important;*/
-        height: calc(100% - #{$tabs-height}) !important;
-    }
-
     @include mobile {
         nav {
             height: $nav-height-mobile;
@@ -119,6 +133,9 @@
         }
         .user-image {
             height: 30px;
+        }
+        .color-picker {
+            top: 30px;
         }
         .logout-button {
             height: 23px;
@@ -142,8 +159,22 @@
             height: 54px;
             border-radius: 30px;
         }
+        .color-picker {
+            top: 40px;
+        }
         .logout-button {
             height: 23px;
+        }
+    }
+
+    .left-menu {
+        display: inherit;
+        align-items: center;
+        .user-name {
+            display: inline-block;
+            color: gray;
+        }
+        .user-image {
         }
     }
 
@@ -155,17 +186,35 @@
         padding: 10px;
     }
 
-    .user-info {
-        display: inherit;
-        align-items: center;
+    .right-menu {
+        display: flex;
+        .color-picker {
+            position: absolute;
+            right: 60px;
+            z-index: 2;
+            height: 0;
+            overflow: hidden;
+            transition: height 0.3s ease-in-out;
+            &:hover {
+                height: 243px;
+            }
+        }
+        .current-color {
+            height: 12px;
+            width: 12px;
+            border: 3px solid gray;
+            background-color: rgb(255, 255, 165);
+            margin-right: 10px;
+            &:hover {
+                & + div {
+                    height: 243px;
+                }
+            }
+        }
     }
 
-    .user-name {
-        display: inline-block;
-        color: gray;
-    }
-
-    .user-image {
+    .page {
+        height: calc(100% - #{$tabs-height}) !important;
     }
 
     .logout-button {
