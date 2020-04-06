@@ -125,12 +125,12 @@ export default new Vuex.Store({
             const myPublicPosts = state.myPosts.filter(post => post.private_yn === 'n')
             return [...myPublicPosts, ...state.othersPosts]
                 .filter(post => DateUtil.isToday(post.date))
-                .filter(post => post.text.includes(state.searchKeyword))
+                .filter(post => post.text.includes(state.searchKeyword) || post.name.includes(state.searchKeyword))
         },
         filteredAllPost: state => {
             const myPublicPosts = state.myPosts.filter(post => post.private_yn === 'n')
             return [...myPublicPosts, ...state.othersPosts]
-                .filter(post => post.text.includes(state.searchKeyword))
+                .filter(post => post.text.includes(state.searchKeyword) || post.name.includes(state.searchKeyword))
         }
     }
 })
