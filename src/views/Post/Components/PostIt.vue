@@ -99,7 +99,7 @@
     .text-area {
         width: 230px;
         height: 200px;
-        white-space: pre-line;
+        white-space: pre-wrap;
         text-align: left;
         overflow-y: auto;
         word-break: break-all;
