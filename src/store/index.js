@@ -24,6 +24,7 @@ export default new Vuex.Store({
         postColor: SessionStorage.load('myColor') || '#FFFFFF',
         myPosts: [],
         teamPosts: [],
+        finishedPosts: []
     },
     mutations: {
         disableSearch: state => {
@@ -43,6 +44,7 @@ export default new Vuex.Store({
                 return post
             })
             state.teamPosts = payload.teamPosts
+            state.finishedPosts = payload.donePosts
         },
         updatePost: (state, postId) => {
             const updatePost = state.myPosts.find(post => post.uid === postId)
@@ -125,7 +127,8 @@ export default new Vuex.Store({
         fetchPosts: async store => {
             const {data: myPosts} = await axios.get('/post/me')
             const {data: teamPosts} = await axios.get('/post/team')
-            store.commit('setPosts', {myPosts, teamPosts})
+            const {data: donePosts} = await axios.get('/post/done')
+            store.commit('setPosts', {myPosts, teamPosts, donePosts})
         }
     },
     modules: {},
@@ -134,8 +137,9 @@ export default new Vuex.Store({
         searchKeyword: state => state.searchKeyword,
         userName: state => state.userName,
         postColor: state => state.postColor,
-        filteredMyPost: state => state.myPosts.sort((a, b) => new Date(b.date) - new Date(a.date)).filter(post => post.text.includes(state.searchKeyword)),
-        filteredTeamPost: state => {
+        filteredFinishedPosts: state => state.finishedPosts.filter(post => post.text.includes(state.searchKeyword) || post.name.includes(state.searchKeyword)),
+        filteredMyPosts: state => state.myPosts.sort((a, b) => new Date(b.date) - new Date(a.date)).filter(post => post.text.includes(state.searchKeyword)),
+        filteredTeamPosts: state => {
             const myPublicPosts = state.myPosts.filter(post => post.private_yn === 'n')
             const sortByDate = [...myPublicPosts, ...state.teamPosts].sort((a, b) => new Date(b.date) - new Date(a.date))
             return sortByDate.filter(post => post.text.includes(state.searchKeyword) || post.name.includes(state.searchKeyword))
