@@ -1,7 +1,7 @@
 <template>
     <div class="post-it" :style="{'background-color': currentColor}">
         <div class="menu">
-            <template v-if="isMyPost">
+            <template v-if="post.isMyPost">
                 <img class="delete-button" @click="deletePost" src="@/assets/trashcan.png"/>
                 <img v-if="!post.editable&&!isPublished" class="publish-button" @click="publishPost" src="@/assets/plane.png"/>
                 <img v-if="post.editable" class="save-button" @click="savePost" src="@/assets/document-check.png"/>
@@ -16,7 +16,6 @@
 
 <script>
     import {Vue, Component, Prop} from 'vue-property-decorator'
-    import SessionStorage from "@/utils/SessionStorage";
     import Color from "@/model/Color";
 
     @Component
@@ -34,10 +33,7 @@
 
         get name() {
             if (this.post.isMyPost) return this.$store.getters.userName
-            else this.post.name
-        }
-        get isMyPost() {
-            return this.post.user_id === SessionStorage.user().id.toString()
+            else return this.post.name
         }
         get isPublished() {
             return this.post.private_yn === 'n'
@@ -81,8 +77,8 @@
         flex-direction: column;
         padding: 13px;
         box-shadow: 6px 6px 5px 0px rosybrown;
-        max-height: 244px;
-        max-width: 230px;
+        height: 244px;
+        width: 230px;
     }
 
     .menu {

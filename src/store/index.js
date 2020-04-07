@@ -8,8 +8,8 @@ import SessionStorage from '@/utils/SessionStorage'
 
 Vue.use(Vuex)
 
-axios.defaults.baseURL = 'http://postit.conanshin.tech:5002/'
-// axios.defaults.baseURL = 'http://localhost:5002/'
+// axios.defaults.baseURL = 'http://postit.conanshin.tech:5002/'
+axios.defaults.baseURL = 'http://localhost:5002/'
 axios.interceptors.request.use(config => {
     config.headers['user-id'] = SessionStorage.user().id
     return config
@@ -53,6 +53,7 @@ export default new Vuex.Store({
             state.myPosts.find(post => post.uid === postId).private_yn = 'n'
         },
         addPost: (state, post) => {
+            post.isMyPost = true
             post.name = SessionStorage.user().name
             post.newNote = post.text
             post.editable = false
@@ -114,6 +115,7 @@ export default new Vuex.Store({
         fetchPosts: async store => {
             const {data: myPosts} = await axios.get('/post/me')
             const {data: teamPosts} = await axios.get('/post/team')
+            console.log(teamPosts)
             store.commit('setPosts', {myPosts, teamPosts})
         }
     },
