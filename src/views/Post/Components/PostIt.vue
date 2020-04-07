@@ -1,25 +1,21 @@
 <template>
     <div class="post-it" :style="{'background-color': currentColor}">
         <div class="menu">
-            <template v-if="isMyPost">
-                <img v-if="!post.editable" class="finish-button" @click="finishPost" src="@/assets/finish-flag.png"/>
-
-                <img v-if="!post.editable" class="delete-button" @click="deletePost" src="@/assets/trashcan.png"/>
-                <img v-if="!post.editable&&!isPublished" class="publish-button" @click="publishPost" src="@/assets/public.png"/>
-                <img v-if="!post.editable&&isPublished" class="publish-button" @click="unpublishPost" src="@/assets/private.png"/>
+            <template v-if="post.isMyPost">
+                <img class="delete-button" @click="deletePost" src="@/assets/trashcan.png"/>
+                <img v-if="!post.editable&&!isPublished" class="publish-button" @click="publishPost" src="@/assets/plane.png"/>
                 <img v-if="post.editable" class="save-button" @click="savePost" src="@/assets/document-check.png"/>
                 <img v-if="!post.editable" class="edit-button" @click="editPost" src="@/assets/pencil.png"/>
             </template>
         </div>
         <textarea v-if="post.editable" v-model="post.newNote" class="editable text-area" :style="{'background-color': currentColor}"></textarea>
         <div v-else class="text-area">{{post.text}}</div>
-        <div class="author">{{post.name}}</div>
+        <div class="author">{{name}}</div>
     </div>
 </template>
 
 <script>
     import {Vue, Component, Prop} from 'vue-property-decorator'
-    import SessionStorage from "@/utils/SessionStorage";
     import Color from "@/model/Color";
 
     @Component
@@ -27,7 +23,7 @@
         @Prop() post
 
         get currentColor() {
-            if (this.post.name === '나') {
+            if (this.post.isMyPost) {
                 const myColor = new Color(this.$store.getters.postColor)
                 if (this.isPublished) return myColor.value()
                 else return myColor.transparentValue()
@@ -35,8 +31,9 @@
             return this.post.color
         }
 
-        get isMyPost() {
-            return this.post.user_id === SessionStorage.user().id.toString()
+        get name() {
+            if (this.post.isMyPost) return this.$store.getters.userName
+            else return this.post.name
         }
         get isPublished() {
             return this.post.private_yn === 'n'
@@ -92,8 +89,8 @@
         flex-direction: column;
         padding: 13px;
         box-shadow: 6px 6px 5px 0px rosybrown;
-        max-height: 244px;
-        max-width: 230px;
+        height: 244px;
+        width: 230px;
     }
 
     .menu {

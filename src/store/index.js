@@ -1,7 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import axios from 'axios'
-import DateUtil from '../utils/Date'
 import VueRouter from '../router'
 import KakaoConnector from '@/utils/Kakao'
 import SessionStorage from '@/utils/SessionStorage'
@@ -21,6 +20,7 @@ export default new Vuex.Store({
     state: {
         disabledSearch: false,
         searchKeyword: '',
+        userName: SessionStorage.user().name || '',
         postColor: SessionStorage.load('myColor') || '#FFFFFF',
         myPosts: [],
         teamPosts: [],
@@ -35,12 +35,9 @@ export default new Vuex.Store({
         setSearchKeyword: (state, payload) => {
             state.searchKeyword = payload
         },
-        changePostColor: (state, payload) => {
-            state.postColor = payload
-        },
         setPosts: (state, payload) => {
             state.myPosts = payload.myPosts.map(post => {
-                post.name = '나'
+                post.isMyPost = true
                 post.newNote = post.text
                 post.editable = false
                 return post
@@ -55,7 +52,8 @@ export default new Vuex.Store({
             state.myPosts.find(post => post.uid === postId).private_yn = 'n'
         },
         addPost: (state, post) => {
-            post.name = '나'
+            post.isMyPost = true
+            post.name = SessionStorage.user().name
             post.newNote = post.text
             post.editable = false
             state.myPosts.push(post)
@@ -68,8 +66,17 @@ export default new Vuex.Store({
     actions: {
         login: async (store) => {
             await KakaoConnector.login()
-            const user = await KakaoConnector.fetchUserInfo()
-            store.dispatch('updateUser', user)
+            const kakaoUser = await KakaoConnector.fetchUserInfo()
+            const kakaoName = kakaoUser.properties.nickname
+            const user = SessionStorage.save('user', kakaoUser)
+            const {data: {name, color}} = await axios.post('/user', {name: kakaoName})
+
+            user.saveName(name)
+            store.state.userName = name
+
+            SessionStorage.save('myColor', color)
+            store.state.postColor = color
+
             VueRouter.push({name: 'Post'})
         },
         logout: async store => {
@@ -79,15 +86,14 @@ export default new Vuex.Store({
             location.reload() // reload 없으면 카카오 로그인이 Promise return을 하지 않는다..?
         },
         updateColor: async (store, color) => {
+            store.state.postColor = color
             await axios.put('/user/color', {color})
             SessionStorage.save('myColor', color)
         },
-        updateUser: async (store, user) => {
-            SessionStorage.save('user', user)
-            const {name} = SessionStorage.user()
-            const {data} = await axios.post('/user', {name})
-            store.commit('changePostColor', data.color)
-            SessionStorage.save('myColor', data.color)
+        changeUserName: async (store, newName) => {
+            store.state.userName = newName
+            await axios.put('/user', {name: newName})
+            SessionStorage.user().saveName(newName)
         },
         newPost: async (store, text) => {
             const {data} = await axios.post('/post', {text})
@@ -116,6 +122,7 @@ export default new Vuex.Store({
         fetchPosts: async store => {
             const {data: myPosts} = await axios.get('/post/me')
             const {data: teamPosts} = await axios.get('/post/team')
+            console.log(teamPosts)
             store.commit('setPosts', {myPosts, teamPosts})
         }
     },
@@ -123,8 +130,12 @@ export default new Vuex.Store({
     getters: {
         disabledSearch: state => state.disabledSearch,
         searchKeyword: state => state.searchKeyword,
+        userName: state => state.userName,
         postColor: state => state.postColor,
         filteredMyPost: state => state.myPosts.filter(post => post.text.includes(state.searchKeyword)),
-        filteredTeamPost: state => state.teamPosts.filter(post => post.text.includes(state.searchKeyword) || post.name.includes(state.searchKeyword))
+        filteredTeamPost: state => {
+            const myPublicPosts = state.myPosts.filter(post => post.private_yn === 'n')
+            return [...myPublicPosts, ...state.teamPosts].filter(post => post.text.includes(state.searchKeyword) || post.name.includes(state.searchKeyword))
+        }
     }
 })

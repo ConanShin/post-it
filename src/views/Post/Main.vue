@@ -3,7 +3,7 @@
         <nav>
             <div class="left-menu">
                 <img class="user-image" :src="userImage"/>
-                <div class="user-name">{{userName}}</div>
+                <input class="user-name" v-model="userName" @change="changeUserName" @keyup.enter="$event.target.blur()">
             </div>
             <input class="search-bar" v-model="keyword" placeholder="키워드 검색" :disabled="disableSearch"/>
             <div class="right-menu">
@@ -64,10 +64,13 @@
             this.$store.commit('setSearchKeyword', value)
         }
 
+        changeUserName() {
+            this.$store.dispatch('changeUserName', this.userName)
+        }
+
         colorPicked(color) {
             clearTimeout(this.debounceFunction)
             this.debounceFunction = setTimeout(() => {
-                this.$store.commit('changePostColor', color.hex8)
                 this.$store.dispatch('updateColor', color.hex8)
             }, 500)
         }
@@ -170,6 +173,8 @@
         .user-name {
             display: inline-block;
             color: gray;
+            background: transparent;
+            border: none;
         }
         .user-image {
         }
