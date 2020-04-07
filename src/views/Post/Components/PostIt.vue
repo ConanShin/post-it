@@ -8,7 +8,7 @@
                 <img v-if="!post.editable" class="edit-button" @click="editPost" src="@/assets/pencil.png"/>
             </template>
         </div>
-        <textarea v-if="post.editable" v-model="post.newNote" class="editable text-area"></textarea>
+        <textarea v-if="post.editable" v-model="post.newNote" class="editable text-area" :style="{'background-color': currentColor}"></textarea>
         <div v-else class="text-area">{{post.text}}</div>
         <div class="author">{{post.name}}</div>
     </div>
