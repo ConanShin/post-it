@@ -26,9 +26,9 @@
     import {Vue, Component} from 'vue-property-decorator'
     import { Chrome } from 'vue-color'
     import Tabs from "vue-slide-tabs"
-    import PrivatePost from './PrivatePost'
-    import AllPost from './AllPost'
-    import TodayPost from './TodayPost'
+    import PrivatePost from './Me'
+    import AllPost from './Dashboard'
+    import TodayPost from './Team'
     import SessionStorage from '@/utils/SessionStorage'
 
     @Component({
@@ -39,14 +39,11 @@
         userImage = SessionStorage.user().image
         debounceFunction
         tabs = [
-            {label: 'Private'},
-            {label: 'Today'},
-            {label: 'All'}
+            {label: 'Me'},
+            {label: 'Team'},
+            {label: 'Dashboard'}
         ]
 
-        mounted() {
-            // this.$el.querySelector('.current-color').style.backgroundColor = this.color
-        }
         async beforeMount() {
             await this.$store.dispatch('fetchPosts')
         }

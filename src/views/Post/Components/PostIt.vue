@@ -17,14 +17,19 @@
 <script>
     import {Vue, Component, Prop} from 'vue-property-decorator'
     import SessionStorage from "@/utils/SessionStorage";
+    import Color from "@/model/Color";
 
     @Component
     export default class PostIt extends Vue {
         @Prop() post
 
         get currentColor() {
-            if (this.post.name === '나') return this.$store.getters.postColor
-            else return this.post.color
+            if (this.post.name === '나') {
+                const myColor = new Color(this.$store.getters.postColor)
+                if (this.isPublished) return myColor.value()
+                else return myColor.transparentValue()
+            }
+            return this.post.color
         }
 
         get isMyPost() {

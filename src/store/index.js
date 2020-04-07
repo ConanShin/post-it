@@ -23,7 +23,7 @@ export default new Vuex.Store({
         searchKeyword: '',
         postColor: SessionStorage.load('myColor') || '#FFFFFF',
         myPosts: [],
-        othersPosts: [],
+        teamPosts: [],
     },
     mutations: {
         disableSearch: state => {
@@ -45,7 +45,7 @@ export default new Vuex.Store({
                 post.editable = false
                 return post
             })
-            state.othersPosts = payload.othersPosts
+            state.teamPosts = payload.teamPosts
         },
         updatePost: (state, postId) => {
             const updatePost = state.myPosts.find(post => post.uid === postId)
@@ -106,8 +106,9 @@ export default new Vuex.Store({
             store.commit('removePost', postId)
         },
         fetchPosts: async store => {
-            const {data} = await axios.get('/post/list')
-            store.commit('setPosts', data)
+            const {data: myPosts} = await axios.get('/post/me')
+            const {data: teamPosts} = await axios.get('/post/team')
+            store.commit('setPosts', {myPosts, teamPosts})
         }
     },
     modules: {},
@@ -115,21 +116,7 @@ export default new Vuex.Store({
         disabledSearch: state => state.disabledSearch,
         searchKeyword: state => state.searchKeyword,
         postColor: state => state.postColor,
-        filteredPrivatePost: state => {
-            return state.myPosts
-                .filter(post => post.private_yn === 'y')
-                .filter(post => post.text.includes(state.searchKeyword))
-        },
-        filteredTodayPost: state => {
-            const myPublicPosts = state.myPosts.filter(post => post.private_yn === 'n')
-            return [...myPublicPosts, ...state.othersPosts]
-                .filter(post => DateUtil.isToday(post.date))
-                .filter(post => post.text.includes(state.searchKeyword) || post.name.includes(state.searchKeyword))
-        },
-        filteredAllPost: state => {
-            const myPublicPosts = state.myPosts.filter(post => post.private_yn === 'n')
-            return [...myPublicPosts, ...state.othersPosts]
-                .filter(post => post.text.includes(state.searchKeyword) || post.name.includes(state.searchKeyword))
-        }
+        filteredMyPost: state => state.myPosts.filter(post => post.text.includes(state.searchKeyword)),
+        filteredTeamPost: state => state.teamPosts.filter(post => post.text.includes(state.searchKeyword) || post.name.includes(state.searchKeyword))
     }
 })

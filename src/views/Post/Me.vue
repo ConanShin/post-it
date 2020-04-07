@@ -1,11 +1,8 @@
 <template>
-    <div class="private-post">
-        <div>
-            <h3>Private Post</h3>
-            <div @click="showAddPost" class="button">+</div>
-        </div>
+    <div class="me-page">
+        <div @click="showAddPost" class="add-new-post button">NEW +</div>
         <article class="post-it-area">
-            <post-it v-for="post in privatePost" :post="post" :key="'private-' + post.uid"></post-it>
+            <post-it v-for="post in postList" :post="post" :key="'me-' + post.uid"></post-it>
         </article>
 
         <div v-if="newPost.visible" class="new-post" :style="{'background-color': currentColor}">
@@ -23,7 +20,7 @@
     @Component({
         components: {PostIt}
     })
-    export default class PrivatePost extends Vue {
+    export default class Me extends Vue {
         newPost = {
             visible: false,
             text: ''
@@ -33,8 +30,8 @@
             return this.$store.getters.postColor
         }
 
-        get privatePost() {
-            return this.$store.getters.filteredPrivatePost
+        get postList() {
+            return this.$store.getters.filteredMyPost
         }
 
         resetNewPost() {
@@ -109,7 +106,9 @@
             left: 16px;
         }
     }
-
+    .add-new-post {
+        margin: 8px;
+    }
     .button {
         cursor: pointer;
         display: inline-block;
