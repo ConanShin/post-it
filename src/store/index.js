@@ -55,6 +55,7 @@ export default new Vuex.Store({
             state.myPosts.find(post => post.uid === postId).private_yn = 'n'
         },
         addPost: (state, post) => {
+            post.name = '나'
             post.newNote = post.text
             post.editable = false
             state.myPosts.push(post)
