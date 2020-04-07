@@ -93,6 +93,10 @@ export default new Vuex.Store({
             const {data} = await axios.post('/post', {text})
             store.commit('addPost', data)
         },
+        unpublishPost: async (store, postId) => {
+            await axios.put(`/post/unpublish/${postId}`)
+            store.commit('publishPost', postId)
+        },
         publishPost: async (store, postId) => {
             await axios.put(`/post/publish/${postId}`)
             store.commit('publishPost', postId)
@@ -104,6 +108,10 @@ export default new Vuex.Store({
         deletePost: async (store, postId) => {
             await axios.delete(`/post/${postId}`)
             store.commit('removePost', postId)
+        },
+        finishPost : async (store, postId) => {
+            await axios.put(`/post/finish/${postId}`)
+            store.commit('finishPost', postId)
         },
         fetchPosts: async store => {
             const {data: myPosts} = await axios.get('/post/me')

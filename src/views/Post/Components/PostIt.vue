@@ -2,8 +2,11 @@
     <div class="post-it" :style="{'background-color': currentColor}">
         <div class="menu">
             <template v-if="isMyPost">
-                <img class="delete-button" @click="deletePost" src="@/assets/trashcan.png"/>
-                <img v-if="!post.editable&&!isPublished" class="publish-button" @click="publishPost" src="@/assets/plane.png"/>
+                <img v-if="!post.editable" class="finish-button" @click="finishPost" src="@/assets/finish-flag.png"/>
+
+                <img v-if="!post.editable" class="delete-button" @click="deletePost" src="@/assets/trashcan.png"/>
+                <img v-if="!post.editable&&!isPublished" class="publish-button" @click="publishPost" src="@/assets/public.png"/>
+                <img v-if="!post.editable&&isPublished" class="publish-button" @click="unpublishPost" src="@/assets/private.png"/>
                 <img v-if="post.editable" class="save-button" @click="savePost" src="@/assets/document-check.png"/>
                 <img v-if="!post.editable" class="edit-button" @click="editPost" src="@/assets/pencil.png"/>
             </template>
@@ -54,6 +57,12 @@
             }
         }
 
+        unpublishPost() {
+            if(confirm('비공개로 전환 하시겠습니까?')) {
+                this.$store.dispatch('unpublishPost', this.post.uid)
+            }
+        }
+
         publishPost() {
             if(confirm('공유 하시겠습니까?')) {
                 this.$store.dispatch('publishPost', this.post.uid)
@@ -63,6 +72,12 @@
         deletePost() {
             if (confirm('삭제 하시겠습니까?')) {
                 this.$store.dispatch('deletePost', this.post.uid)
+            }
+        }
+
+        finishPost() {
+            if (confirm('완료처리 하시겠습니까?')) {
+                this.$store.dispatch('finishPost', this.post.uid)
             }
         }
     }
@@ -85,7 +100,7 @@
         height: 21px;
         margin-bottom: 5px;
 
-        .delete-button, .edit-button, .save-button, .publish-button {
+        .delete-button, .finish-button, .edit-button, .save-button, .publish-button {
             height: 13px;
             cursor: pointer;
             padding: 3px;
@@ -93,7 +108,7 @@
             @include embossed-button;
         }
 
-        .edit-button, .publish-button, .save-button, .delete-button {
+        .edit-button, .finish-button, .publish-button, .save-button, .delete-button {
             float: right;
         }
     }
