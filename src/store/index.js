@@ -51,6 +51,9 @@ export default new Vuex.Store({
         publishPost: (state, postId) => {
             state.myPosts.find(post => post.uid === postId).private_yn = 'n'
         },
+        unpublishPost: (state, postId) => {
+            state.myPosts.find(post => post.uid === postId).private_yn = 'y'
+        },
         addPost: (state, post) => {
             post.isMyPost = true
             post.name = SessionStorage.user().name
@@ -101,7 +104,7 @@ export default new Vuex.Store({
         },
         unpublishPost: async (store, postId) => {
             await axios.put(`/post/unpublish/${postId}`)
-            store.commit('publishPost', postId)
+            store.commit('unpublishPost', postId)
         },
         publishPost: async (store, postId) => {
             await axios.put(`/post/publish/${postId}`)
@@ -117,12 +120,11 @@ export default new Vuex.Store({
         },
         finishPost : async (store, postId) => {
             await axios.put(`/post/finish/${postId}`)
-            store.commit('finishPost', postId)
+            store.commit('removePost', postId)
         },
         fetchPosts: async store => {
             const {data: myPosts} = await axios.get('/post/me')
             const {data: teamPosts} = await axios.get('/post/team')
-            console.log(teamPosts)
             store.commit('setPosts', {myPosts, teamPosts})
         }
     },

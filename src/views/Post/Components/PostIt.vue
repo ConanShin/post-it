@@ -2,8 +2,10 @@
     <div class="post-it" :style="{'background-color': currentColor}">
         <div class="menu">
             <template v-if="post.isMyPost">
+                <img v-if="!post.editable" class="finish-button" @click="finishPost" src="@/assets/finish-flag.png"/>
                 <img class="delete-button" @click="deletePost" src="@/assets/trashcan.png"/>
                 <img v-if="!post.editable&&!isPublished" class="publish-button" @click="publishPost" src="@/assets/plane.png"/>
+                <img v-if="!post.editable&&isPublished" class="publish-button" @click="unpublishPost" src="@/assets/private.png"/>
                 <img v-if="post.editable" class="save-button" @click="savePost" src="@/assets/document-check.png"/>
                 <img v-if="!post.editable" class="edit-button" @click="editPost" src="@/assets/pencil.png"/>
             </template>
