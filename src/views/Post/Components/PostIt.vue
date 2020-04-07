@@ -10,7 +10,7 @@
         </div>
         <textarea v-if="post.editable" v-model="post.newNote" class="editable text-area" :style="{'background-color': currentColor}"></textarea>
         <div v-else class="text-area">{{post.text}}</div>
-        <div class="author">{{post.name}}</div>
+        <div class="author">{{name}}</div>
     </div>
 </template>
 
@@ -24,7 +24,7 @@
         @Prop() post
 
         get currentColor() {
-            if (this.post.name === '나') {
+            if (this.post.isMyPost) {
                 const myColor = new Color(this.$store.getters.postColor)
                 if (this.isPublished) return myColor.value()
                 else return myColor.transparentValue()
@@ -32,6 +32,10 @@
             return this.post.color
         }
 
+        get name() {
+            if (this.post.isMyPost) return this.$store.getters.userName
+            else this.post.name
+        }
         get isMyPost() {
             return this.post.user_id === SessionStorage.user().id.toString()
         }
