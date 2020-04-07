@@ -184,6 +184,7 @@
         margin-right: 15px;
         color: darkslategray;
         padding: 10px;
+        background-color: #00000000;
     }
 
     .right-menu {

@@ -25,4 +25,9 @@
         overflow-y: hidden;
         margin: 0;
     }
+
+    body {
+        background: url("./assets/background.jpeg") no-repeat;
+        background-size: cover;
+    }
 </style>
