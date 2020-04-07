@@ -9,9 +9,7 @@
             </template>
         </div>
         <textarea v-if="post.editable" v-model="post.newNote" class="editable text-area"></textarea>
-        <div v-else class="text-area">
-            {{post.text}}
-        </div>
+        <div v-else class="text-area">{{post.text}}</div>
         <div class="author">{{post.name}}</div>
     </div>
 </template>
@@ -39,7 +37,6 @@
         editPost() {
             this.$store.commit('disableSearch')
             this.post.editable = true
-            this.newText = this.post.text
         }
 
         savePost() {
