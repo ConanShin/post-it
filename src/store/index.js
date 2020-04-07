@@ -134,10 +134,11 @@ export default new Vuex.Store({
         searchKeyword: state => state.searchKeyword,
         userName: state => state.userName,
         postColor: state => state.postColor,
-        filteredMyPost: state => state.myPosts.filter(post => post.text.includes(state.searchKeyword)),
+        filteredMyPost: state => state.myPosts.sort((a, b) => new Date(b.date) - new Date(a.date)).filter(post => post.text.includes(state.searchKeyword)),
         filteredTeamPost: state => {
             const myPublicPosts = state.myPosts.filter(post => post.private_yn === 'n')
-            return [...myPublicPosts, ...state.teamPosts].filter(post => post.text.includes(state.searchKeyword) || post.name.includes(state.searchKeyword))
+            const sortByDate = [...myPublicPosts, ...state.teamPosts].sort((a, b) => new Date(b.date) - new Date(a.date))
+            return sortByDate.filter(post => post.text.includes(state.searchKeyword) || post.name.includes(state.searchKeyword))
         }
     }
 })
