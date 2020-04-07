@@ -1,15 +1,14 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import axios from 'axios'
-import DateUtil from '../utils/Date'
 import VueRouter from '../router'
 import KakaoConnector from '@/utils/Kakao'
 import SessionStorage from '@/utils/SessionStorage'
 
 Vue.use(Vuex)
 
-// axios.defaults.baseURL = 'http://postit.conanshin.tech:5002/'
-axios.defaults.baseURL = 'http://localhost:5002/'
+axios.defaults.baseURL = 'http://postit.conanshin.tech:5002/'
+// axios.defaults.baseURL = 'http://localhost:5002/'
 axios.interceptors.request.use(config => {
     config.headers['user-id'] = SessionStorage.user().id
     return config
