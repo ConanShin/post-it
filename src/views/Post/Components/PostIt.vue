@@ -2,10 +2,10 @@
     <div class="post-it" :style="{'background-color': currentColor}">
         <div class="menu">
             <template v-if="post.isMyPost">
-                <img v-if="!post.editable" class="finish-button" @click="finishPost" src="@/assets/finish-flag.png"/>
+                <img v-if="!post.editable&&isPublished" class="finish-button" @click="finishPost" src="@/assets/finish-flag.png"/>
                 <img class="delete-button" @click="deletePost" src="@/assets/trashcan.png"/>
                 <img v-if="!post.editable&&!isPublished" class="publish-button" @click="publishPost" src="@/assets/plane.png"/>
-                <img v-if="!post.editable&&isPublished" class="publish-button" @click="unpublishPost" src="@/assets/private.png"/>
+<!--                <img v-if="!post.editable&&isPublished" class="publish-button" @click="unpublishPost" src="@/assets/private.png"/>-->
                 <img v-if="post.editable" class="save-button" @click="savePost" src="@/assets/document-check.png"/>
                 <img v-if="!post.editable" class="edit-button" @click="editPost" src="@/assets/pencil.png"/>
             </template>
@@ -60,15 +60,15 @@
         }
 
         unpublishPost() {
-            ConfirmAction('비공개로 전환 하시겠습니까?', this.$store.dispatch('unpublishPost', this.post.uid))
+            ConfirmAction('비공개로 전환 하시겠습니까?', () => this.$store.dispatch('unpublishPost', this.post.uid))
         }
 
         publishPost() {
-            ConfirmAction('공유 하시겠습니까?', this.$store.dispatch('publishPost', this.post.uid))
+            ConfirmAction('공유 하시겠습니까?', () => this.$store.dispatch('publishPost', this.post.uid))
         }
 
         deletePost() {
-            ConfirmAction('삭제 하시겠습니까?', this.$store.dispatch('deletePost', this.post.uid))
+            ConfirmAction('삭제 하시겠습니까?', () => this.$store.dispatch('deletePost', this.post.uid))
         }
 
         finishPost() {
