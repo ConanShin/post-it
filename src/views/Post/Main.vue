@@ -187,6 +187,10 @@
         color: darkslategray;
         padding: 10px;
         background-color: #00000000;
+
+        &:disabled {
+            background-color: #00000050;
+        }
     }
 
     .right-menu {
