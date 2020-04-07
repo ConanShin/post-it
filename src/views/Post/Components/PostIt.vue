@@ -24,7 +24,7 @@
 
         get currentColor() {
             if (this.post.name === '나') return this.$store.getters.postColor
-            else return SessionStorage.load('colors').find(color => color.name === this.post.name).color
+            else return this.post.color
         }
 
         get isMyPost() {
