@@ -2,7 +2,7 @@
     <div class="post-it" :style="{'background-color': currentColor}">
         <div class="menu">
             <template v-if="post.isMyPost">
-                <img v-if="!post.editable&&isPublished" class="finish-button" @click="finishPost" src="@/assets/finish-flag.png"/>
+                <img v-if="!post.editable&&isPublished&&!isFinished" class="finish-button" @click="finishPost" src="@/assets/finish-flag.png"/>
                 <img class="delete-button" @click="deletePost" src="@/assets/trashcan.png"/>
                 <img v-if="!post.editable&&!isPublished" class="publish-button" @click="publishPost" src="@/assets/plane.png"/>
 <!--                <img v-if="!post.editable&&isPublished" class="publish-button" @click="unpublishPost" src="@/assets/private.png"/>-->
@@ -42,6 +42,9 @@
         }
         get isPublished() {
             return this.post.private_yn === 'n'
+        }
+        get isFinished() {
+            return this.post.done_yn === 'y'
         }
 
         editPost() {

@@ -22,6 +22,9 @@
 
 <style scoped lang="scss">
     @import "@/utils/Common.scss";
+    .team-page {
+        top: 10px;
+    }
     .post-it-area {
         @include post-it-area;
     }

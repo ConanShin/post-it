@@ -3,7 +3,8 @@
         <nav>
             <div class="left-menu">
                 <img class="user-image" :src="userImage"/>
-                <input class="user-name" v-model="userName" @change="changeUserName" @keyup.enter="$event.target.blur()">
+                <input class="user-name" v-model="userName" @change="changeUserName"
+                       @keyup.enter="$event.target.blur()">
             </div>
             <input class="search-bar" v-model="keyword" placeholder="키워드 검색" :disabled="disableSearch"/>
             <div class="right-menu">
@@ -24,7 +25,7 @@
 
 <script>
     import {Vue, Component} from 'vue-property-decorator'
-    import { Chrome } from 'vue-color'
+    import {Chrome} from 'vue-color'
     import Tabs from "vue-slide-tabs"
     import MyPost from './Me'
     import DashboardDesktop from './Dashboard'
@@ -98,9 +99,11 @@
             height: calc(100% - #{$nav-height-desktop})
         }
     }
+
     .tabs-content {
         height: calc(100% - #{$tabs-height})
     }
+
     .tabs-content > .wrapper {
         height: 100%;
     }
@@ -174,12 +177,14 @@
     .left-menu {
         display: inherit;
         align-items: center;
+
         .user-name {
             display: inline-block;
             color: gray;
             background: transparent;
             border: none;
         }
+
         .user-image {
         }
     }
@@ -199,6 +204,7 @@
 
     .right-menu {
         display: flex;
+
         .color-picker {
             position: absolute;
             right: 60px;
@@ -206,16 +212,19 @@
             height: 0;
             overflow: hidden;
             transition: height 0.3s ease-in-out;
+
             &:hover {
                 height: 243px;
             }
         }
+
         .current-color {
             height: 12px;
             width: 12px;
             border: 3px solid gray;
             background-color: rgb(255, 255, 165);
             margin-right: 10px;
+
             &:hover {
                 & + div {
                     height: 243px;
@@ -226,6 +235,9 @@
 
     .page {
         height: calc(100% - #{$tabs-height}) !important;
+        display: inline-flex !important;
+        flex-direction: column;
+        position: relative;
     }
 
     .logout-button {

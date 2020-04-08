@@ -4,7 +4,7 @@ import axios from 'axios'
 import VueRouter from '../router'
 import KakaoConnector from '@/utils/Kakao'
 import SessionStorage from '@/utils/SessionStorage'
-
+import Helper from '@/utils/HelperMethods'
 Vue.use(Vuex)
 
 axios.defaults.baseURL = 'http://postit.conanshin.tech:5002/'
@@ -46,9 +46,8 @@ export default new Vuex.Store({
             state.teamPosts = payload.teamPosts
             state.finishedPosts = payload.donePosts
         },
-        updatePost: (state, postId) => {
-            const updatePost = state.myPosts.find(post => post.uid === postId)
-            updatePost.text = updatePost.newNote
+        updatePost: (state, post) => {
+            post.text = post.newNote
         },
         publishPost: (state, postId) => {
             state.myPosts.find(post => post.uid === postId).private_yn = 'n'
@@ -58,12 +57,20 @@ export default new Vuex.Store({
         },
         addPost: (state, post) => {
             post.isMyPost = true
-            post.name = SessionStorage.user().name
             post.newNote = post.text
             post.editable = false
+            post.name = state.userName
+            post.color = state.postColor
             state.myPosts.push(post)
         },
         removePost: (state, postId) => {
+            const removePostId = state.myPosts.findIndex(post => post.uid === postId)
+            state.myPosts.splice(removePostId, 1)
+        },
+        finishPost: (state, postId) => {
+            const finishedPost = Helper.deepcopy(state.myPosts.find(post => post.uid === postId))
+            finishedPost.done_yn = 'y'
+            state.finishedPosts.push(finishedPost)
             const removePostId = state.myPosts.findIndex(post => post.uid === postId)
             state.myPosts.splice(removePostId, 1)
         }
@@ -114,7 +121,7 @@ export default new Vuex.Store({
         },
         updatePost: async (store, post) => {
             await axios.put(`/post/${post.uid}`, {text: post.newNote})
-            store.commit('updatePost', post.uid)
+            store.commit('updatePost', post)
         },
         deletePost: async (store, postId) => {
             await axios.delete(`/post/${postId}`)
@@ -122,7 +129,7 @@ export default new Vuex.Store({
         },
         finishPost : async (store, postId) => {
             await axios.put(`/post/finish/${postId}`)
-            store.commit('removePost', postId)
+            store.commit('finishPost', postId)
         },
         fetchPosts: async store => {
             const {data: myPosts} = await axios.get('/post/me')
@@ -137,11 +144,19 @@ export default new Vuex.Store({
         searchKeyword: state => state.searchKeyword,
         userName: state => state.userName,
         postColor: state => state.postColor,
-        filteredFinishedPosts: state => state.finishedPosts.filter(post => post.text.includes(state.searchKeyword) || post.name.includes(state.searchKeyword)),
-        filteredMyPosts: state => state.myPosts.sort((a, b) => new Date(b.date) - new Date(a.date)).filter(post => post.text.includes(state.searchKeyword)),
+        filteredMyPosts: state => {
+            const myProgressPosts = state.myPosts.filter(post => post.done_yn === 'n')
+            return myProgressPosts.sort((a, b) => new Date(b.date) - new Date(a.date)).filter(post => post.text.includes(state.searchKeyword))
+        },
         filteredTeamPosts: state => {
-            const myPublicPosts = state.myPosts.filter(post => post.private_yn === 'n')
-            const sortByDate = [...myPublicPosts, ...state.teamPosts].sort((a, b) => new Date(b.date) - new Date(a.date))
+            const myProgressPublicPosts = state.myPosts.filter(post => post.private_yn === 'n').filter(post => post.done_yn === 'n')
+            const sortByDate = [...myProgressPublicPosts, ...state.teamPosts].sort((a, b) => new Date(b.date) - new Date(a.date))
+            return sortByDate.filter(post => post.text.includes(state.searchKeyword) || post.name.includes(state.searchKeyword))
+        },
+        filteredFinishedPosts: state => {
+            const myDonePosts = state.myPosts.filter(post => post.done_yn === 'y')
+            console.log(myDonePosts)
+            const sortByDate = [...myDonePosts, ...state.finishedPosts].sort((a, b) => new Date(b.date) - new Date(a.date))
             return sortByDate.filter(post => post.text.includes(state.searchKeyword) || post.name.includes(state.searchKeyword))
         }
     }

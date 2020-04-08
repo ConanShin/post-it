@@ -37,8 +37,8 @@
         }
 
         get donePostsInWeek() {
+            this.hidePost()
             const tasksInWeek = Array.from({length: this.daysEachWeek.length}, e => [])
-
             this.$store.getters.filteredFinishedPosts.forEach(post => {
                 const nthWeek = DateUtil.nthWeek(new Date(post.date)) - 1 // index conversion
                 tasksInWeek[nthWeek].push(post)
@@ -68,9 +68,7 @@
         }
 
         showPost(selectedPost) {
-            const post = Helper.deepcopy(selectedPost)
-            post.color = new Color(post.color).solidValue()
-            this.selectedPost = post
+            this.selectedPost = selectedPost
         }
         hidePost() {
             this.selectedPost = null
@@ -88,19 +86,7 @@
 
     .dashboard-page {
         padding: 10px 0;
-        position: relative;
-    }
-
-    .cell {
-        height: $cell-size;
-        width: $cell-size;
-        display: inline-block;
-    }
-
-    .nth-week, .week {
-        &:last-of-type {
-            border-right-color: transparent;
-        }
+        top: -10px;
     }
 
     .nth-week {
@@ -112,7 +98,7 @@
     .vertical-line {
         display: inline-block;
         width: $line-width;
-        height: 80vh;
+        height: calc(100% - 30px);
         background: brown;
         position: absolute;
 
@@ -133,6 +119,8 @@
 
     .body {
         position: relative;
+        overflow-y: overlay;
+        height: 100%;
 
         .done-task {
             width: calc(100% - 22px);
