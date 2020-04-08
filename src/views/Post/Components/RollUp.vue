@@ -1,6 +1,7 @@
 <template>
     <div class = "post-rollup-wrapper">
-        <span class = "default-item-icon" :style="{'background-color': currentColor}"></span>
+        <!-- <img class="delete-button" @click="deletePost" src="@/assets/trashcan.png"/> -->
+        <span class = "default-item-icon" :style="{'background-color': post.color}"></span>
         <div class="post-rollup-body">
             <div class="post-rollup-title">Etc</div>
             <div class="post-rollup-content">{{post.text}}</div>
@@ -17,55 +18,10 @@
     export default class PostIt extends Vue {
         @Prop() post
 
-        get currentColor() {
-            if (this.post.isMyPost) {
-                const myColor = new Color(this.$store.getters.postColor)
-                if (this.isPublished) return myColor.value()
-                else return myColor.transparentValue()
-            }
-            return this.post.color
-        }
-
-        get name() {
-            if (this.post.isMyPost) return this.$store.getters.userName
-            else return this.post.name
-        }
-        get isPublished() {
-            return this.post.private_yn === 'n'
-        }
-
-        editPost() {
-            this.$store.commit('disableSearch')
-            this.post.editable = true
-        }
-
-        savePost() {
-            this.$store.commit('enableSearch')
-            this.post.editable = false
-            if (confirm('저장 하시겠습니까?')) {
-                this.$store.dispatch('updatePost', this.post)
-            } else {
-                this.post.newNote = this.post.text
-            }
-        }
-
-        unpublishPost() {
-            Helper.confirmAction('비공개로 전환 하시겠습니까?', () => this.$store.dispatch('unpublishPost', this.post.uid))
-        }
-
-        publishPost() {
-            Helper.confirmAction('공유 하시겠습니까?', () => this.$store.dispatch('publishPost', this.post.uid))
-        }
-
         deletePost() {
             Helper.confirmAction('삭제 하시겠습니까?', () => this.$store.dispatch('deletePost', this.post.uid))
         }
 
-        finishPost() {
-            if (confirm('완료처리 하시겠습니까?')) {
-                this.$store.dispatch('finishPost', this.post.uid)
-            }
-        }
     }
 </script>
 
@@ -75,13 +31,12 @@
     .post-rollup-wrapper{
         padding: 24px 24px 0px 24px;
     }
-
     .default-item-icon{
         float: left;
-        width: 24px;
-        height: 24px;
-        margin-top: -5px;
-        margin-left: -15px;
+        width: 15px;
+        height: 15px;
+        margin-top: 1px;
+        margin-left: -10px;
         margin-right: 10px;
         line-height: 28px;
         // background-color: white;
@@ -90,9 +45,19 @@
     .post-rollup-body{
         margin-left: 20px;
         white-space: initial;
+        word-break: break-word;
     }
     .post-rollup-title{
         font-weight: 600!important;
         font-size: 1.1em;
+    }
+
+    .delete-button {
+        height: 13px;
+        cursor: pointer;
+        padding: 3px;
+        margin-left: 2px;
+        float: right;
+        @include embossed-button;
     }
 </style>

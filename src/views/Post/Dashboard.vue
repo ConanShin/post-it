@@ -1,7 +1,7 @@
 <template>
     <div class="dashboard-page">
         <div class="head">
-            <div>{{month}}</div>
+            <div class="month">{{month}}</div>
             <template v-for="(days, index) in daysEachWeek">
                 <div class="nth-week">week {{index + 1}}</div>
                 <div class="vertical-line"></div>
@@ -87,6 +87,14 @@
     .dashboard-page {
         padding: 10px 0;
         top: -10px;
+        position: relative;
+    }
+
+    .month{
+        font-size: 2em;
+        font-weight: 500;
+        margin: 20px;
+
     }
 
     .nth-week {
