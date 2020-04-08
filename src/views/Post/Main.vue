@@ -129,7 +129,9 @@
         }
         .user-name {
             font-size: 12px;
-            margin-left: 3px;
+            margin: 0 6px;
+            width: 15vw;
+
         }
         .user-image {
             height: 30px;
