@@ -31,7 +31,7 @@
         }
 
         get postList() {
-            return this.$store.getters.filteredMyPost
+            return this.$store.getters.filteredMyPosts
         }
 
         resetNewPost() {

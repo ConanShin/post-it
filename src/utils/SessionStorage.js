@@ -8,6 +8,8 @@ class SessionStorage {
     }
     user() {
         const user = JSON.parse(sessionStorage.getItem('user'))
+        if (!user) return {}
+
         return {
             saveName: (newName) => {
                 user.properties.nickname = newName

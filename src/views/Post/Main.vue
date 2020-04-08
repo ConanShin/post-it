@@ -129,7 +129,9 @@
         }
         .user-name {
             font-size: 12px;
-            margin-left: 3px;
+            margin: 0 6px;
+            width: 15vw;
+
         }
         .user-image {
             height: 30px;
@@ -187,6 +189,10 @@
         color: darkslategray;
         padding: 10px;
         background-color: #00000000;
+
+        &:disabled {
+            background-color: #00000050;
+        }
     }
 
     .right-menu {

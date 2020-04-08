@@ -15,16 +15,13 @@
     })
     export default class Team extends Vue {
         get postList () {
-            return this.$store.getters.filteredTeamPost
+            return this.$store.getters.filteredTeamPosts
         }
     }
 </script>
 
 <style scoped lang="scss">
     @import "@/utils/Common.scss";
-    h3 {
-        display: inline-block;
-    }
     .post-it-area {
         @include post-it-area;
     }
