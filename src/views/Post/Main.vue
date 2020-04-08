@@ -27,7 +27,8 @@
     import { Chrome } from 'vue-color'
     import Tabs from "vue-slide-tabs"
     import PrivatePost from './Me'
-    import AllPost from './Dashboard'
+    // import AllPost from './Dashboard'
+    import AllPost from './Mobile'
     import TodayPost from './Team'
     import SessionStorage from '@/utils/SessionStorage'
 
@@ -41,7 +42,7 @@
         tabs = [
             {label: 'Me'},
             {label: 'Team'},
-            {label: 'Dashboard'}
+            {label: 'DashboardMobile'}
         ]
 
         async beforeMount() {
