@@ -8,9 +8,14 @@ export default class Color {
         this.alpha = hex.substring(7, 9)
     }
 
-    transparentValue () {
+    transparentValue() {
         const OFFSET = 0.4
         this.alpha = parseInt(parseInt(this.alpha, 16) * OFFSET).toString(16)
+        return this.value()
+    }
+
+    solidValue() {
+        this.alpha = 'ff'
         return this.value()
     }
 

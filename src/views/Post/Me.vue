@@ -6,7 +6,7 @@
         </article>
 
         <div v-if="newPost.visible" class="new-post" :style="{'background-color': currentColor}">
-            <textarea v-model="newPost.text" :style="{'background-color': currentColor}"></textarea>
+            <textarea v-model="newPost.text"></textarea>
             <div @click="saveNewPost" class="save-new-post button">save</div>
             <div @click="closeAddPost" class="close-add-post button">cancel</div>
         </div>
@@ -92,6 +92,7 @@
             width: 200px;
             height: 200px;
             @include post-it;
+            background-color: transparent;
         }
 
         .close-add-post {

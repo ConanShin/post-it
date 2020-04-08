@@ -9,25 +9,34 @@
         </div>
         <div class="body">
             <div v-for="week in donePostsInWeek" class="week">
-                <div v-for="doneTask in week" class="done-task" :style="{'backgroundColor': doneTask.color}">{{doneTask.text}}</div>
+                <div v-for="doneTask in week" class="done-task" :style="{'backgroundColor': doneTask.color}"
+                     @click.stop.prevent="() => showPost(doneTask)">
+                    <div class="done-task-text">{{doneTask.text}}</div>
+                </div>
             </div>
         </div>
+        <post-it v-if="selectedPost" :post="selectedPost" class="popup-position" v-click-outside="hidePost"></post-it>
     </div>
 </template>
 
 <script>
     import {Vue, Component} from 'vue-property-decorator'
+    import PostIt from '@/views/Post/Components/PostIt'
     import DateUtil from '@/utils/Date'
+    import Color from '@/model/Color'
+    import Helper from '@/utils/HelperMethods'
 
-    @Component
+    @Component({
+        components: {PostIt}
+    })
     export default class Dashboard extends Vue {
         now = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate())
-
-        get month () {
+        selectedPost = null
+        get month() {
             return DateUtil.monthMapper(this.now)
         }
 
-        get donePostsInWeek () {
+        get donePostsInWeek() {
             const tasksInWeek = Array.from({length: this.daysEachWeek.length}, e => [])
 
             this.$store.getters.filteredFinishedPosts.forEach(post => {
@@ -57,11 +66,21 @@
         get daysEachWeek() {
             return [this.daysInFirstWeek, ...this.fullWeeks, this.daysInLastWeek]
         }
+
+        showPost(selectedPost) {
+            const post = Helper.deepcopy(selectedPost)
+            post.color = new Color(post.color).solidValue()
+            this.selectedPost = post
+        }
+        hidePost() {
+            this.selectedPost = null
+        }
     }
 </script>
 
 <style scoped lang="scss">
     @import "@/utils/Common.scss";
+    @import '@/utils/MediaQuery.scss';
 
     $line-width: 2px;
     $cell-size: 3vw;
@@ -69,6 +88,7 @@
 
     .dashboard-page {
         padding: 10px 0;
+        position: relative;
     }
 
     .cell {
@@ -95,6 +115,7 @@
         height: 80vh;
         background: brown;
         position: absolute;
+
         &:last-of-type {
             width: 0;
         }
@@ -109,20 +130,45 @@
     .nth-week, .week {
         width: $week-width;
     }
+
     .body {
         position: relative;
+
         .done-task {
-            width: calc(100% - 24px);
-            padding: 14px 5px;
-            margin: 3px 3px 3px 4px;
+            width: calc(100% - 22px);
+            padding: 10px 5px;
+            margin: 3px 0 3px 2px;
+        }
+
+        .done-task-text {
             text-align: left;
+            box-sizing: border-box;
 
             overflow: hidden;
             text-overflow: ellipsis;
             display: -webkit-box;
             -webkit-line-clamp: 3;
             -webkit-box-orient: vertical;
-            word-wrap: break-word;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }
+    }
+
+    .popup-position {
+        position: absolute;
+    }
+
+    @include mobile {
+        .popup-position {
+            top: 8vh;
+            left: 15vw;
+        }
+    }
+
+    @include desktop {
+        .popup-position {
+            top: 25vh;
+            left: 25vw;
         }
     }
 </style>

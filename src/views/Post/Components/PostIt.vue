@@ -10,8 +10,8 @@
                 <img v-if="!post.editable" class="edit-button" @click="editPost" src="@/assets/pencil.png"/>
             </template>
         </div>
-        <textarea v-if="post.editable" v-model="post.newNote" class="editable text-area" :style="{'background-color': currentColor}"></textarea>
-        <div v-else class="text-area">{{post.text}}</div>
+        <textarea v-if="post.editable" v-model="post.newNote" class="editable textarea"></textarea>
+        <div v-else class="textarea">{{post.text}}</div>
         <div class="author">{{name}}</div>
 
 
@@ -21,7 +21,7 @@
 <script>
     import {Vue, Component, Prop} from 'vue-property-decorator'
     import Color from "@/model/Color";
-    import ConfirmAction from '@/utils/ConfirmAction'
+    import Helper from '@/utils/HelperMethods'
 
     @Component
     export default class PostIt extends Vue {
@@ -60,15 +60,15 @@
         }
 
         unpublishPost() {
-            ConfirmAction('비공개로 전환 하시겠습니까?', () => this.$store.dispatch('unpublishPost', this.post.uid))
+            Helper.confirmAction('비공개로 전환 하시겠습니까?', () => this.$store.dispatch('unpublishPost', this.post.uid))
         }
 
         publishPost() {
-            ConfirmAction('공유 하시겠습니까?', () => this.$store.dispatch('publishPost', this.post.uid))
+            Helper.confirmAction('공유 하시겠습니까?', () => this.$store.dispatch('publishPost', this.post.uid))
         }
 
         deletePost() {
-            ConfirmAction('삭제 하시겠습니까?', () => this.$store.dispatch('deletePost', this.post.uid))
+            Helper.confirmAction('삭제 하시겠습니까?', () => this.$store.dispatch('deletePost', this.post.uid))
         }
 
         finishPost() {
@@ -109,7 +109,7 @@
         }
     }
 
-    .text-area {
+    .textarea {
         width: 230px;
         height: 200px;
         white-space: pre-wrap;
@@ -117,6 +117,7 @@
         overflow-y: auto;
         word-break: break-all;
         padding: 0;
+        background-color: transparent;
 
         &.editable {
             @include post-it;
