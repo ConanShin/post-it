@@ -1,7 +1,8 @@
 <template>
     <div class="main">
-        Post It
-        <div class="login-button" @click="login">Login with Kakao</div>
+        <div class="title">Post It</div>
+        <div class="description">저희 사이트는 크롬에 최적화 되었습니다.</div>
+        <div class="login-button" @click="login"></div>
     </div>
 </template>
 
@@ -24,11 +25,32 @@
         flex-direction: column;
     }
 
+    .title {
+        margin-bottom: 50px;
+        font-size: 24px;
+        font-weight: bold;
+    }
+
+    .title, .description {
+        color: antiquewhite;
+    }
+
+    .description {
+        margin-bottom: 10px;
+    }
+
     .login-button {
+        width: 50px;
+        height: 70px;
         cursor: pointer;
         border: 1px solid darkgrey;
         padding: 5px 15px;
-        border-radius: 10px;
+        border-radius: 50%;
         margin-top: 10px;
+        background-image: url("../../assets/login-button.png");
+        background-size: 100px;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-color: rgb(250, 220, 4);
     }
 </style>
