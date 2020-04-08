@@ -11,7 +11,7 @@
 <script>
     import {Vue, Component, Prop} from 'vue-property-decorator'
     import Color from "@/model/Color";
-    import ConfirmAction from '@/utils/ConfirmAction'
+    import Helper from '@/utils/HelperMethods'
 
     @Component
     export default class PostIt extends Vue {
@@ -50,15 +50,15 @@
         }
 
         unpublishPost() {
-            ConfirmAction('비공개로 전환 하시겠습니까?', () => this.$store.dispatch('unpublishPost', this.post.uid))
+            Helper.confirmAction('비공개로 전환 하시겠습니까?', () => this.$store.dispatch('unpublishPost', this.post.uid))
         }
 
         publishPost() {
-            ConfirmAction('공유 하시겠습니까?', () => this.$store.dispatch('publishPost', this.post.uid))
+            Helper.confirmAction('공유 하시겠습니까?', () => this.$store.dispatch('publishPost', this.post.uid))
         }
 
         deletePost() {
-            ConfirmAction('삭제 하시겠습니까?', () => this.$store.dispatch('deletePost', this.post.uid))
+            Helper.confirmAction('삭제 하시겠습니까?', () => this.$store.dispatch('deletePost', this.post.uid))
         }
 
         finishPost() {

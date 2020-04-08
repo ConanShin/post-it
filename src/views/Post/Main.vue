@@ -15,9 +15,9 @@
             </div>
         </nav>
         <tabs :tabs="tabs">
-            <private-post class="page"></private-post>
-            <today-post class="page"></today-post>
-            <all-post class="page"></all-post>
+            <my-post class="page"></my-post>
+            <team-post class="page"></team-post>
+            <dashboard class="page"></dashboard>
         </tabs>
     </div>
 </template>
@@ -26,14 +26,15 @@
     import {Vue, Component} from 'vue-property-decorator'
     import { Chrome } from 'vue-color'
     import Tabs from "vue-slide-tabs"
-    import PrivatePost from './Me'
-    // import AllPost from './Dashboard'
-    import AllPost from './Mobile'
-    import TodayPost from './Team'
+    import MyPost from './Me'
+    import DashboardDesktop from './Dashboard'
+    import DashboardMobile from './Mobile'
+    import TeamPost from './Team'
     import SessionStorage from '@/utils/SessionStorage'
 
+    const isDesktop = window.screen.width > 758
     @Component({
-        components: {Chrome, Tabs, PrivatePost, TodayPost, AllPost}
+        components: {Chrome, Tabs, MyPost, TeamPost, Dashboard: isDesktop ? DashboardDesktop : DashboardMobile}
     })
     export default class Main extends Vue {
         userName = SessionStorage.user().name
@@ -42,7 +43,7 @@
         tabs = [
             {label: 'Me'},
             {label: 'Team'},
-            {label: 'DashboardMobile'}
+            {label: 'Dashboard'}
         ]
 
         async beforeMount() {
