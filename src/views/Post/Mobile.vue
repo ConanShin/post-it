@@ -9,7 +9,7 @@
                     <roll-up v-for="doneTask in week" :post="doneTask" :key="'team-' + doneTask.uid"></roll-up>
                 </div>
             </div>
-            <div class="show-more-button">show more</div>
+            <!-- <div class="show-more-button">show more</div> -->
         </article>
     </div>
 </template>
@@ -74,7 +74,7 @@
         // background: rgba(256, 256, 256, 0.3);
         position: relative;
         height: 100% !important;
-        top: -40px;
+        top: -10px;
         // overflow: scroll;
     }
     .vl{
@@ -85,10 +85,11 @@
         top: 30px;
         bottom: 0px;
         z-index: -1;
-        background-color: white;
+        background: linear-gradient(rgba(255, 255, 255, 1) 20%, rgba(255, 255, 255, 0));
     }
     .timeline-area {
         @include post-it-area;
+        min-height: 78vh;
         background: rgba(256, 256, 256, 0.3);
         position: relative;
         margin: 20px;

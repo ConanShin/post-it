@@ -7,9 +7,7 @@ $tabs-title-height: 55px;
   flex-wrap: wrap;
   justify-content: center;
   overflow-x: hidden;
-  overflow-y: scroll;
-  -webkit-overflow-scrolling: touch;
-
+  overflow-y: auto;
   height: fit-content;
   max-height: 100%;
 }
