@@ -24,7 +24,8 @@ export default new Vuex.Store({
         postColor: SessionStorage.load('myColor') || '#FFFFFF',
         myPosts: [],
         teamPosts: [],
-        finishedPosts: []
+        finishedPosts: [],
+        workItems: []
     },
     mutations: {
         disableSearch: state => {
@@ -73,7 +74,10 @@ export default new Vuex.Store({
             state.finishedPosts.push(finishedPost)
             const removePostId = state.myPosts.findIndex(post => post.uid === postId)
             state.myPosts.splice(removePostId, 1)
-        }
+        },
+        addItem: (state, item) => {
+            state.workItems.push(item)
+        },
     },
     actions: {
         login: async (store) => {
@@ -136,7 +140,11 @@ export default new Vuex.Store({
             const {data: teamPosts} = await axios.get('/post/team')
             const {data: donePosts} = await axios.get('/post/done')
             store.commit('setPosts', {myPosts, teamPosts, donePosts})
-        }
+        },
+        newItem: async (store, text) => {
+            const {data} = await axios.post('/item', {"name" : text})
+            store.commit('addItem', data)
+        },
     },
     modules: {},
     getters: {

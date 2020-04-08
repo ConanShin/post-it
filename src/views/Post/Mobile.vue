@@ -23,6 +23,8 @@
         components: {RollUp}
     })
     export default class Dashboard extends Vue {
+
+
         now = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate())
         get month() {
             return DateUtil.monthMapper(this.now)

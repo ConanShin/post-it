@@ -1,7 +1,14 @@
 <template>
     <div class="dashboard-page">
+
+        <div v-if="newItem.visible" class="new-item" >
+            <textarea v-model="newItem.text"></textarea>
+            <div @click="saveNewItem" class="save-new-item button">save</div>
+            <div @click="closeAddItem" class="close-add-item button">cancel</div>
+        </div>
         <div class="head">
             <div class="month">{{month}}</div>
+            <div @click="showAddItem" class="add-new-item button">업무 아이템 추가</div>
             <template v-for="(days, index) in daysEachWeek">
                 <div class="nth-week">week {{index + 1}}</div>
                 <div class="vertical-line"></div>
@@ -32,6 +39,7 @@
     export default class Dashboard extends Vue {
         now = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate())
         selectedPost = null
+
         get month() {
             return DateUtil.monthMapper(this.now)
         }
@@ -73,6 +81,31 @@
         hidePost() {
             this.selectedPost = null
         }
+
+        // add work item
+        newItem = {
+            visible: false,
+            text: ''
+        }
+
+        showAddItem() {
+            this.newItem.visible = true
+        }
+        closeAddItem() {
+            this.resetNewItem()
+        }
+
+        saveNewItem() {
+            console.log(this.newItem)
+            this.$store.dispatch('newItem', this.newItem.text)
+            this.resetNewItem()
+        }
+
+        resetNewItem() {
+            this.newItem.visible = false
+            this.newItem.text = ''
+        }
+
     }
 </script>
 
@@ -88,6 +121,16 @@
         padding: 10px 0;
         top: -10px;
         position: relative;
+    }
+
+    .add-new-item {
+        margin: 8px;
+    }
+    .button {
+        cursor: pointer;
+        display: block;
+        margin-left: 10px;
+        padding: 5px;
     }
 
     .month{
