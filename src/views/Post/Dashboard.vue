@@ -99,7 +99,7 @@
 
     .nth-week {
         display: inline-block;
-        border-bottom: $line-width solid brown;
+        border-bottom: $line-width solid rgba(50, 50, 50, 0.5);
         padding: 15px 0;
     }
 
@@ -107,7 +107,7 @@
         display: inline-block;
         width: $line-width;
         height: calc(100% - 30px);
-        background: brown;
+        background: rgba(50, 50, 50, 0.5);
         position: absolute;
 
         &:last-of-type {
