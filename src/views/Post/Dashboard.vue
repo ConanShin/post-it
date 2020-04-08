@@ -23,8 +23,6 @@
     import {Vue, Component} from 'vue-property-decorator'
     import PostIt from '@/views/Post/Components/PostIt'
     import DateUtil from '@/utils/Date'
-    import Color from '@/model/Color'
-    import Helper from '@/utils/HelperMethods'
 
     @Component({
         components: {PostIt}

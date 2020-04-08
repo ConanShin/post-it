@@ -155,7 +155,6 @@ export default new Vuex.Store({
         },
         filteredFinishedPosts: state => {
             const myDonePosts = state.myPosts.filter(post => post.done_yn === 'y')
-            console.log(myDonePosts)
             const sortByDate = [...myDonePosts, ...state.finishedPosts].sort((a, b) => new Date(b.date) - new Date(a.date))
             return sortByDate.filter(post => post.text.includes(state.searchKeyword) || post.name.includes(state.searchKeyword))
         }
