@@ -13,7 +13,14 @@ axios.interceptors.request.use(config => {
     config.headers['user-id'] = SessionStorage.user().id
     return config
 }, error => {
-    alert(error)
+    console.log('Request Error', error)
+})
+
+axios.interceptors.response.use(response => {
+    return response
+}, error => {
+    console.log('Response Error', error)
+    VueRouter.push({name: 'Login'})
 })
 
 export default new Vuex.Store({
