@@ -16,8 +16,8 @@
         <div v-if="finishingPost.visible" class="publishing-post" >
             <div>
                 아이템: 
-                <select v-model="finishingPost.itemId">
-                    <option disabled value="">선택</option>
+                <select v-model="finishingPost.itemId" :required="true">
+                    <option disabled>선택</option>
                     <option v-for="item in itemList" v-bind:value="item.id">
                         {{ item.name }}
                     </option>
@@ -131,7 +131,9 @@
         }
 
         saveFinishingPost() {
-            // parsedDate = moment(this.finishingPost.date).format('YYYY-MM-DD');
+            if(this.finishingPost.itemId===''){
+                return confirm('아이템을 선택해 주십시오')
+            }
             if (confirm('완료처리 하시겠습니까?')) {
                 this.$store.dispatch('finishPost', { 
                     postId : this.post.uid, 
