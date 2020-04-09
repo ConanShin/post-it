@@ -272,13 +272,14 @@
 
     .mobile-date-picker {
         position: absolute;
-        bottom: -300px;
+        bottom: 0;
         left: 0;
         width: 100%;
-        transition: bottom .3s ease;
+        height: 0;
+        transition: height .3s ease;
 
         &.show {
-            bottom: 0;
+            height: 300px;
         }
     }
 
