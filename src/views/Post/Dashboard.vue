@@ -1,7 +1,6 @@
 <template>
     <div class="dashboard-page">
-
-        <div v-if="newItem.visible" class="new-item" >
+        <div v-if="newItem.visible" class="new-item">
             <textarea v-model="newItem.text"></textarea>
             <div @click="saveNewItem" class="save-new-item button">save</div>
             <div @click="closeAddItem" class="close-add-item button">cancel</div>
@@ -9,23 +8,23 @@
         <div class="head">
             <div class="month">{{month}}</div>
         </div>
-        <table class= "progress-table">
+        <table class="progress-table">
             <thead>
-                <tr class="progress-tr week-name">
-                    <th class="progress-cell"> </th>
-                    <th class="progress-cell" v-for="(days, index) in daysEachWeek"> week {{index + 1}}</th>
-                </tr>
+            <tr class="progress-tr week-name">
+                <th class="progress-cell item-name-cell"></th>
+                <th class="progress-cell" v-for="(days, index) in daysEachWeek"> week {{index + 1}}</th>
+            </tr>
             </thead>
             <tbody>
-                <tr class="progress-tr" v-for="(itemPosts, index) in donePostsEachItem" >
-                    <!-- <td class="progress-cell item-name-cell"> {{ itemList[index] ? itemList[index] : 'undefined'}}</td> -->
-                    <td class="progress-cell item-name-cell"> {{ itemList[index] ? itemList[index].name : 'undefined'}}</td>
-                    <td class="progress-cell task-cell" v-for="posts in postsInWeek(itemPosts)">
-                        <div v-for="post in posts" class="done-task" :style="{'backgroundColor': post.color}"
-                            @click.stop.prevent="() => showPost(post)">{{post.text}}
-                        </div>
-                    </td>
-                </tr>
+            <tr class="progress-tr" v-for="(itemPosts, index) in donePostsEachItem">
+                <!-- <td class="progress-cell item-name-cell"> {{ itemList[index] ? itemList[index] : 'undefined'}}</td> -->
+                <td class="progress-cell item-name-cell"> {{ itemList[index] ? itemList[index].name.split(',').join('\n') : 'undefined'}}</td>
+                <td class="progress-cell task-cell" v-for="posts in postsInWeek(itemPosts)">
+                    <div v-for="post in posts" class="done-task" :style="{'backgroundColor': post.color}"
+                         @click.stop.prevent="() => showPost(post)">{{post.text}}
+                    </div>
+                </td>
+            </tr>
             </tbody>
         </table>
         <post-it v-if="selectedPost" :post="selectedPost" class="popup-position" v-click-outside="hidePost"></post-it>
@@ -52,12 +51,12 @@
 
         get donePostsEachItem() {
             this.hidePost()
-            const tasksItems = Array.from({length: this.itemList.length+1}, e => [])
+            const tasksItems = Array.from({length: this.itemList.length + 1}, e => [])
             this.$store.getters.filteredFinishedPosts.forEach(post => {
                 const itemIndex = this.itemList.findIndex(item => item.id === post.item_id);
-                if(itemIndex === -1){ // item지정 안된것도 보여주기
+                if (itemIndex === -1) { // item지정 안된것도 보여주기
                     tasksItems[this.itemList.length].push(post)
-                }else{
+                } else {
                     tasksItems[itemIndex].push(post)
                 }
             })
@@ -65,7 +64,6 @@
         }
 
         postsInWeek(itemTasks) {
-            // this.hidePost()
             const tasksInWeek = Array.from({length: this.daysEachWeek.length}, e => [])
             itemTasks.forEach(post => {
                 const nthWeek = DateUtil.nthWeek(new Date(post.date)) - 1 // index conversion
@@ -74,16 +72,6 @@
 
             return tasksInWeek
         }
-
-        // get donePostsInWeek() {
-        //     this.hidePost()
-        //     const tasksInWeek = Array.from({length: this.daysEachWeek.length}, e => [])
-        //     this.$store.getters.filteredFinishedPosts.forEach(post => {
-        //         const nthWeek = DateUtil.nthWeek(new Date(post.date)) - 1 // index conversion
-        //         tasksInWeek[nthWeek].push(post)
-        //     })
-        //     return tasksInWeek
-        // }
 
         get daysInFirstWeek() {
             const firstDayOfMonth = new Date(this.now.getFullYear(), this.now.getMonth(), 1)
@@ -113,6 +101,7 @@
         showPost(selectedPost) {
             this.selectedPost = selectedPost
         }
+
         hidePost() {
             this.selectedPost = null
         }
@@ -126,6 +115,7 @@
         showAddItem() {
             this.newItem.visible = true
         }
+
         closeAddItem() {
             this.resetNewItem()
         }
@@ -139,7 +129,6 @@
             this.newItem.visible = false
             this.newItem.text = ''
         }
-
 
 
     }
@@ -168,7 +157,7 @@
         padding: 5px;
     }
 
-    .month{
+    .month {
         font-size: 2em;
         font-weight: 500;
         margin: 20px;
@@ -184,6 +173,7 @@
         flex-direction: column;
         align-items: center;
     }
+
     .popup-position {
         position: absolute;
     }
@@ -203,7 +193,7 @@
     }
 
     // table 부분
-    .progress-table{
+    .progress-table {
         table-layout: fixed;
         width: 90%;
         margin: 0 auto;
@@ -211,26 +201,24 @@
         padding: 10px;
 
         td {
-        background-color: rgba(240, 240, 240, 0.5);
+            background-color: rgba(240, 240, 240, 0.5);
         }
 
         th, td {
-            min-width: $week-width;
-            // min-width: 120px;
             padding: 5px;
         }
 
         //tr
-        .progress-tr{
+        .progress-tr {
             height: 13vh;
         }
+
         .week-name {
             height: 20px;
         }
 
 
-        .task-cell{
-            max-width: 100px;
+        .task-cell {
             vertical-align: baseline;
 
             div.done-task {
@@ -242,13 +230,14 @@
 
         }
 
-        td.item-name-cell{
-            max-width: 20px;
-            min-width: 20px;
-            white-space: normal;
+        th.item-name-cell {
+            width: 8vw;
+        }
+
+        td.item-name-cell {
+            white-space: pre-wrap;
             background: rgba(256, 256, 256, 0.85);
             border-radius: 10% 0% 0% 10%/ 15%;
-            // font-weight: 800;
         }
 
     }
