@@ -1,20 +1,32 @@
 <template>
     <div class="dashboard-page">
+        <div v-if="newItem.visible" class="new-item">
+            <textarea v-model="newItem.text"></textarea>
+            <div @click="saveNewItem" class="save-new-item button">save</div>
+            <div @click="closeAddItem" class="close-add-item button">cancel</div>
+        </div>
         <div class="head">
             <div class="month">{{month}}</div>
-            <template v-for="(days, index) in daysEachWeek">
-                <div class="nth-week">week {{index + 1}}</div>
-                <div class="vertical-line"></div>
-            </template>
         </div>
-        <div class="body">
-            <div v-for="week in donePostsInWeek" class="week">
-                <div v-for="doneTask in week" class="done-task" :style="{'backgroundColor': doneTask.color}"
-                     @click.stop.prevent="() => showPost(doneTask)">
-                    <div class="done-task-text">{{doneTask.text}}</div>
-                </div>
-            </div>
-        </div>
+        <table class="progress-table">
+            <thead>
+            <tr class="progress-tr week-name">
+                <th class="progress-cell item-name-cell"></th>
+                <th class="progress-cell" v-for="(days, index) in daysEachWeek"> week {{index + 1}}</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr class="progress-tr" v-for="(itemPosts, index) in donePostsEachItem">
+                <!-- <td class="progress-cell item-name-cell"> {{ itemList[index] ? itemList[index] : 'undefined'}}</td> -->
+                <td class="progress-cell item-name-cell"> {{ itemList[index] ? itemList[index].name.split(',').join('\n') : 'undefined'}}</td>
+                <td class="progress-cell task-cell" v-for="posts in postsInWeek(itemPosts)">
+                    <div v-for="post in posts" class="done-task" :style="{'backgroundColor': post.color}"
+                         @click.stop.prevent="() => showPost(post)">{{post.text}}
+                    </div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
         <post-it v-if="selectedPost" :post="selectedPost" class="popup-position" v-click-outside="hidePost"></post-it>
     </div>
 </template>
@@ -30,17 +42,32 @@
     export default class Dashboard extends Vue {
         now = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate())
         selectedPost = null
+
         get month() {
             return DateUtil.monthMapper(this.now)
         }
 
-        get donePostsInWeek() {
+        get donePostsEachItem() {
             this.hidePost()
-            const tasksInWeek = Array.from({length: this.daysEachWeek.length}, e => [])
+            const tasksItems = Array.from({length: this.itemList.length + 1}, e => [])
             this.$store.getters.filteredFinishedPosts.forEach(post => {
+                const itemIndex = this.itemList.findIndex(item => item.id === post.item_id);
+                if (itemIndex === -1) { // item지정 안된것도 보여주기
+                    tasksItems[this.itemList.length].push(post)
+                } else {
+                    tasksItems[itemIndex].push(post)
+                }
+            })
+            return tasksItems
+        }
+
+        postsInWeek(itemTasks) {
+            const tasksInWeek = Array.from({length: this.daysEachWeek.length}, e => [])
+            itemTasks.forEach(post => {
                 const nthWeek = DateUtil.nthWeek(new Date(post.date)) - 1 // index conversion
                 tasksInWeek[nthWeek].push(post)
             })
+
             return tasksInWeek
         }
 
@@ -65,12 +92,43 @@
             return [this.daysInFirstWeek, ...this.fullWeeks, this.daysInLastWeek]
         }
 
+        get itemList() {
+            return this.$store.getters.items
+        }
+
         showPost(selectedPost) {
             this.selectedPost = selectedPost
         }
+
         hidePost() {
             this.selectedPost = null
         }
+
+        // add work item
+        newItem = {
+            visible: false,
+            text: ''
+        }
+
+        showAddItem() {
+            this.newItem.visible = true
+        }
+
+        closeAddItem() {
+            this.resetNewItem()
+        }
+
+        saveNewItem() {
+            this.$store.dispatch('newItem', this.newItem.text)
+            this.resetNewItem()
+        }
+
+        resetNewItem() {
+            this.newItem.visible = false
+            this.newItem.text = ''
+        }
+
+
     }
 </script>
 
@@ -86,66 +144,32 @@
         padding: 10px 0;
         top: -10px;
         position: relative;
+        overflow: scroll;
     }
 
-    .month{
+
+    .button {
+        cursor: pointer;
+        display: block;
+        margin-left: 10px;
+        padding: 5px;
+    }
+
+    .month {
         font-size: 2em;
         font-weight: 500;
         margin: 20px;
 
     }
 
-    .nth-week {
-        display: inline-block;
-        border-bottom: $line-width solid rgba(50, 50, 50, 0.5);
-        padding: 15px 0;
-    }
-
-    .vertical-line {
-        display: inline-block;
-        width: $line-width;
-        height: calc(100% - 30px);
-        background: rgba(50, 50, 50, 0.5);
-        position: absolute;
-
-        &:last-of-type {
-            width: 0;
-        }
+    .add-new-item {
+        margin: 8px;
     }
 
     .week {
         display: inline-flex;
         flex-direction: column;
         align-items: center;
-    }
-
-    .nth-week, .week {
-        width: $week-width;
-    }
-
-    .body {
-        position: relative;
-        overflow-y: overlay;
-        height: 100%;
-
-        .done-task {
-            width: calc(100% - 22px);
-            padding: 10px 5px;
-            margin: 3px 0 3px 2px;
-        }
-
-        .done-task-text {
-            text-align: left;
-            box-sizing: border-box;
-
-            overflow: hidden;
-            text-overflow: ellipsis;
-            display: -webkit-box;
-            -webkit-line-clamp: 3;
-            -webkit-box-orient: vertical;
-            white-space: pre-wrap;
-            word-break: break-all;
-        }
     }
 
     .popup-position {
@@ -165,4 +189,56 @@
             left: 25vw;
         }
     }
+
+    // table 부분
+    .progress-table {
+        table-layout: fixed;
+        width: 90%;
+        margin: 0 auto;
+        white-space: nowrap;
+        padding: 10px;
+
+        td {
+            background-color: rgba(240, 240, 240, 0.5);
+        }
+
+        th, td {
+            padding: 5px;
+        }
+
+        //tr
+        .progress-tr {
+            height: 13vh;
+        }
+
+        .week-name {
+            height: 20px;
+        }
+
+
+        .task-cell {
+            vertical-align: baseline;
+
+            div.done-task {
+                padding: 2px 4px;
+                margin: 3px 0 3px 2px;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+
+        }
+
+        th.item-name-cell {
+            width: 8vw;
+        }
+
+        td.item-name-cell {
+            white-space: pre-wrap;
+            background: rgba(256, 256, 256, 0.85);
+            border-radius: 10% 0% 0% 10%/ 15%;
+        }
+
+    }
+
+
 </style>

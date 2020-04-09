@@ -3,7 +3,7 @@
         <!-- <img class="delete-button" @click="deletePost" src="@/assets/trashcan.png"/> -->
         <span class = "default-item-icon" :style="{'background-color': post.color}"></span>
         <div class="post-rollup-body">
-            <div class="post-rollup-title">Etc</div>
+            <div class="post-rollup-title">{{itemName(post.item_id)}}</div>
             <div class="post-rollup-content">{{post.text}}</div>
         </div>
     </div>
@@ -20,6 +20,18 @@
 
         deletePost() {
             Helper.confirmAction('삭제 하시겠습니까?', () => this.$store.dispatch('deletePost', this.post.uid))
+        }
+
+        get itemList() {
+            return this.$store.getters.items
+        }
+
+        itemName(itemid) {
+            if(!itemid) return "아이템 없음"
+            const found = this.itemList.find(element => element.id === itemid);
+
+            console.log(found)
+            return found.name
         }
 
     }

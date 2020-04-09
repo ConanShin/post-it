@@ -18,11 +18,13 @@
     import {Vue, Component} from 'vue-property-decorator'
     import RollUp from "./Components/RollUp"
     import DateUtil from '@/utils/Date'
-    
+
     @Component({
         components: {RollUp}
     })
     export default class Dashboard extends Vue {
+
+
         now = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate())
         get month() {
             return DateUtil.monthMapper(this.now)
@@ -60,7 +62,6 @@
         }
 
         hasSchedule(week) {
-            console.log(week)
             if(week.length === 0) return false;
             return true;
         }
