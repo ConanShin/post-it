@@ -138,7 +138,7 @@ export default new Vuex.Store({
         finishPost : async (store, postData) => {
             console.log("action", postData)
             const {postId, itemId, date } = postData
-            const ret = await axios.put(`/post/finishNew/${postId}` , { "date" : date, "item_id" : parseInt(itemId) } )
+            const ret = await axios.put(`/post/finish/${postId}` , { "date" : date, "item_id" : parseInt(itemId) } )
             console.log("axios put ret", ret)
             store.commit('finishPost', postData)
         },
