@@ -16,7 +16,7 @@
         <div v-if="finishingPost.visible" class="publishing-post" >
             <div>
                 아이템:
-                <select v-model="finishingPost.itemId" :required="true">
+                <select class="item-picker" v-model="finishingPost.itemId" :required="true">
                     <option disabled>선택</option>
                     <option v-for="item in itemList" v-bind:value="item.id">
                         {{ item.name }}
@@ -223,9 +223,14 @@
         cursor: pointer;
     }
 
+    .item-picker {
+        width: 140px;
+    }
+
     .date-picker {
         display: inline-flex;
         margin-left: 8px;
         margin-top: 3px;
+        width: 140px;
     }
 </style>

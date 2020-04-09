@@ -7,8 +7,8 @@ import SessionStorage from '@/utils/SessionStorage'
 import Helper from '@/utils/HelperMethods'
 Vue.use(Vuex)
 
-// axios.defaults.baseURL = 'http://postit.conanshin.tech:5002/'
-axios.defaults.baseURL = 'http://localhost:5002/'
+axios.defaults.baseURL = 'http://postit.conanshin.tech:5002/'
+// axios.defaults.baseURL = 'http://localhost:5002/'
 axios.interceptors.request.use(config => {
     config.headers['user-id'] = SessionStorage.user().id
     return config
