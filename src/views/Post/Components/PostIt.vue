@@ -15,7 +15,7 @@
         <div v-else class="textarea">{{post.text}}</div>
         <div v-if="finishingPost.visible" class="publishing-post" >
             <div>
-                아이템: 
+                아이템:
                 <select v-model="finishingPost.itemId" :required="true">
                     <option disabled>선택</option>
                     <option v-for="item in itemList" v-bind:value="item.id">
@@ -24,7 +24,7 @@
                 </select>
             </div>
             <div>
-                날짜:  
+                날짜:
                 <datepicker v-model="finishingPost.date"  :value="this.now"></datepicker>
             </div>
 
@@ -32,8 +32,6 @@
             <div @click="closeFinishingPost" class="publishing-post-button button">취소</div>
         </div>
         <div v-if="!post.editable" class="author">{{name}}</div>
-
-
     </div>
 </template>
 
@@ -135,9 +133,9 @@
                 return confirm('아이템을 선택해 주십시오')
             }
             if (confirm('완료처리 하시겠습니까?')) {
-                this.$store.dispatch('finishPost', { 
-                    postId : this.post.uid, 
-                    itemId : this.finishingPost.itemId, 
+                this.$store.dispatch('finishPost', {
+                    postId : this.post.uid,
+                    itemId : this.finishingPost.itemId,
                     date: moment(this.finishingPost.date).format('YYYY-MM-DD')
                 })
             }

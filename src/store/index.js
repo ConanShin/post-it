@@ -78,11 +78,13 @@ export default new Vuex.Store({
             const removePostId = state.myPosts.findIndex(post => post.uid === postId)
             state.myPosts.splice(removePostId, 1)
         },
-        finishPost: (state, postData) => {
-            const finishedPost = Helper.deepcopy(state.myPosts.find(post => post.uid === postData.postId))
+        finishPost: (state, {postId, itemId, date}) => {
+            const finishedPost = Helper.deepcopy(state.myPosts.find(post => post.uid === postId))
             finishedPost.done_yn = 'y'
+            finishedPost.item_id = itemId
+            finishedPost.date = date
             state.finishedPosts.push(finishedPost)
-            const removePostId = state.myPosts.findIndex(post => post.uid === postData.postId)
+            const removePostId = state.myPosts.findIndex(post => post.uid === postId)
             state.myPosts.splice(removePostId, 1)
         },
         addItem: (state, item) => {
@@ -143,7 +145,7 @@ export default new Vuex.Store({
         },
         finishPost : async (store, postData) => {
             const {postId, itemId, date } = postData
-            const ret = await axios.put(`/post/finish/${postId}` , { "date" : date, "item_id" : parseInt(itemId) } )
+            await axios.put(`/post/finish/${postId}` , {date, item_id: parseInt(itemId)})
             store.commit('finishPost', postData)
         },
         fetchPosts: async store => {
