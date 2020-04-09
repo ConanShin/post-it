@@ -10,8 +10,21 @@
                 <img v-if="!post.editable" class="edit-button" @click="editPost" src="@/assets/pencil.png"/>
             </template>
         </div>
-        <textarea v-if="post.editable" v-model="post.newNote" class="editable textarea"></textarea>
+        <textarea v-if="post.editable" v-model="post.newNote" class="editable textarea">
+        </textarea>
         <div v-else class="textarea">{{post.text}}</div>
+        <div v-if="finishingPost.visible" class="publishing-post" >
+            아이템 아이디 : 
+            <select v-model="finishingPost.itemId">
+                <option disabled value="">선택</option>
+                <option v-for="item in itemList" v-bind:value="item.id">
+                    {{ item.name }}
+                </option>
+            </select>
+            기준일(달력 표기일) : {{finishingPost.date}}
+            <div @click="saveFinishingPost" class="save-publishing-post button">save</div>
+            <div @click="closeFinishingPost" class="close-publishing-post button">cancel</div>
+        </div>
         <div class="author">{{name}}</div>
 
 
@@ -22,10 +35,18 @@
     import {Vue, Component, Prop} from 'vue-property-decorator'
     import Color from "@/model/Color";
     import Helper from '@/utils/HelperMethods'
+    import moment from 'moment';
 
     @Component
     export default class PostIt extends Vue {
         @Prop() post
+        now = moment(new Date()).format('YYYY-MM-DD');
+
+        finishingPost = {
+            visible: false,
+            itemId: '',
+            date: this.now
+        }
 
         get currentColor() {
             if (this.post.isMyPost) {
@@ -45,6 +66,10 @@
         }
         get isFinished() {
             return this.post.done_yn === 'y'
+        }
+
+        get itemList() {
+            return this.$store.getters.items
         }
 
         editPost() {
@@ -74,10 +99,30 @@
             Helper.confirmAction('삭제 하시겠습니까?', () => this.$store.dispatch('deletePost', this.post.uid))
         }
 
+        // finishing post
+        resetFinishingPost() {
+            this.finishingPost.visible = false
+            this.finishingPost.itemId = ''
+            this.finishingPost.date = this.now
+        }
+
         finishPost() {
+            this.showFinishingPost();
+        }
+
+        showFinishingPost(){
+            this.finishingPost.visible = true
+        }
+
+        closeFinishingPost() {
+            this.resetFinishingPost()
+        }
+
+        saveFinishingPost() {
             if (confirm('완료처리 하시겠습니까?')) {
-                this.$store.dispatch('finishPost', this.post.uid)
+                this.$store.dispatch('finishPost', { postId : this.post.uid, itemId : this.finishingPost.itemId, date: this.finishingPost.date})
             }
+            this.resetFinishingPost()
         }
     }
 </script>

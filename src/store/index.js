@@ -47,6 +47,9 @@ export default new Vuex.Store({
             state.teamPosts = payload.teamPosts
             state.finishedPosts = payload.donePosts
         },
+        setItems: (state, items) => {
+            state.workItems = items
+        },
         updatePost: (state, post) => {
             post.text = post.newNote
         },
@@ -68,11 +71,12 @@ export default new Vuex.Store({
             const removePostId = state.myPosts.findIndex(post => post.uid === postId)
             state.myPosts.splice(removePostId, 1)
         },
-        finishPost: (state, postId) => {
-            const finishedPost = Helper.deepcopy(state.myPosts.find(post => post.uid === postId))
+        finishPost: (state, postData) => {
+            console.log("mutation", postData)
+            const finishedPost = Helper.deepcopy(state.myPosts.find(post => post.uid === postData.postId))
             finishedPost.done_yn = 'y'
             state.finishedPosts.push(finishedPost)
-            const removePostId = state.myPosts.findIndex(post => post.uid === postId)
+            const removePostId = state.myPosts.findIndex(post => post.uid === postData.postId)
             state.myPosts.splice(removePostId, 1)
         },
         addItem: (state, item) => {
@@ -131,15 +135,23 @@ export default new Vuex.Store({
             await axios.delete(`/post/${postId}`)
             store.commit('removePost', postId)
         },
-        finishPost : async (store, postId) => {
-            await axios.put(`/post/finish/${postId}`)
-            store.commit('finishPost', postId)
+        finishPost : async (store, postData) => {
+            console.log("action", postData)
+            const {postId, itemId, date } = postData
+            const ret = await axios.put(`/post/finishNew/${postId}` , { "date" : date, "item_id" : parseInt(itemId) } )
+            console.log("axios put ret", ret)
+            store.commit('finishPost', postData)
         },
         fetchPosts: async store => {
             const {data: myPosts} = await axios.get('/post/me')
             const {data: teamPosts} = await axios.get('/post/team')
             const {data: donePosts} = await axios.get('/post/done')
             store.commit('setPosts', {myPosts, teamPosts, donePosts})
+        },
+        fetchItems: async store => {
+            const {data: items} = await axios.get('/item')
+            console.log("fetch items", items)
+            store.commit('setItems', items)
         },
         newItem: async (store, text) => {
             const {data} = await axios.post('/item', {"name" : text})
@@ -151,6 +163,7 @@ export default new Vuex.Store({
         disabledSearch: state => state.disabledSearch,
         searchKeyword: state => state.searchKeyword,
         userName: state => state.userName,
+        items: state => state.workItems,
         postColor: state => state.postColor,
         filteredMyPosts: state => {
             const myProgressPosts = state.myPosts.filter(post => post.done_yn === 'n')

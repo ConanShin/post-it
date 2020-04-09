@@ -44,11 +44,12 @@
         tabs = [
             {label: 'Me'},
             {label: 'Team'},
-            {label: 'Dashboard'}
+            {label: 'Progress'}
         ]
 
         async beforeMount() {
             await this.$store.dispatch('fetchPosts')
+            await this.$store.dispatch('fetchItems')
         }
 
         get postColor() {
