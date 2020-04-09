@@ -66,6 +66,8 @@
             if(week.length === 0) return false;
             return true;
         }
+
+
     }
 </script>
 

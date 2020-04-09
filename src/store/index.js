@@ -7,8 +7,8 @@ import SessionStorage from '@/utils/SessionStorage'
 import Helper from '@/utils/HelperMethods'
 Vue.use(Vuex)
 
-axios.defaults.baseURL = 'http://postit.conanshin.tech:5002/'
-// axios.defaults.baseURL = 'http://localhost:5002/'
+// axios.defaults.baseURL = 'http://postit.conanshin.tech:5002/'
+axios.defaults.baseURL = 'http://localhost:5002/'
 axios.interceptors.request.use(config => {
     config.headers['user-id'] = SessionStorage.user().id
     return config
@@ -146,6 +146,7 @@ export default new Vuex.Store({
             const {data: myPosts} = await axios.get('/post/me')
             const {data: teamPosts} = await axios.get('/post/team')
             const {data: donePosts} = await axios.get('/post/done')
+            console.log("donePosts", donePosts)
             store.commit('setPosts', {myPosts, teamPosts, donePosts})
         },
         fetchItems: async store => {
