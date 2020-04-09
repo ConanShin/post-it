@@ -5,7 +5,6 @@
             <div class="post-timeline">
                 <div v-for="(week, index) in donePostsInWeek" v-if="hasSchedule(week)" class="week">
                     <h3 class = "post-timeline-month-heading">{{month}}. week {{index+1}} </h3>
-
                     <roll-up v-for="doneTask in week" :post="doneTask" :key="'team-' + doneTask.uid"></roll-up>
                 </div>
             </div>

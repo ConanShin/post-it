@@ -4,9 +4,6 @@
         <article class="post-it-area">
             <post-it v-for="post in postList" :post="post" :key="'me-' + post.uid"></post-it>
         </article>
-
-
-
         <div v-if="newPost.visible" class="new-post" :style="{'background-color': currentColor}">
             <textarea v-model="newPost.text"></textarea>
             <div @click="saveNewPost" class="save-new-post button">save</div>
@@ -27,8 +24,6 @@
             visible: false,
             text: ''
         }
-
-
 
         get currentColor() {
             return this.$store.getters.postColor

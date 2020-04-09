@@ -20,6 +20,8 @@
             <team-post class="page"></team-post>
             <dashboard class="page"></dashboard>
         </tabs>
+        <inlineCalendar class="mobile-date-picker" :class="{'show': $store.getters.mobileCalendar.visible}"
+                        yearName="" :monthNames="months" :weekNames="weeks" :dayClick="dateSelected" v-click-outside="hideMobileCalendar"/>
     </div>
 </template>
 
@@ -32,6 +34,7 @@
     import DashboardMobile from './Mobile'
     import TeamPost from './Team'
     import SessionStorage from '@/utils/SessionStorage'
+    import DateUtil from '@/utils/Date'
 
     const isDesktop = window.screen.width > 758
     @Component({
@@ -46,10 +49,13 @@
             {label: 'Team'},
             {label: 'Progress'}
         ]
+        months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
+        weeks = ['Mon', 'Tue', 'Wed', 'Thur', 'Fri', 'Sat', 'Sun']
+        temp = 'hello'
 
         async beforeMount() {
-            await this.$store.dispatch('fetchPosts')
             await this.$store.dispatch('fetchItems')
+            await this.$store.dispatch('fetchPosts')
         }
 
         get postColor() {
@@ -82,6 +88,14 @@
         logout() {
             this.$store.dispatch('logout')
         }
+
+        dateSelected(value) {
+            const selectedDate = DateUtil.momentYYYYMMDDWithDash(new Date(value.$d))
+            this.$store.commit('mobileCalendarPostDate', selectedDate)
+        }
+        hideMobileCalendar() {
+            return this.$store.commit('mobileCalendar', {visible: false})
+        }
     }
 </script>
 
@@ -99,6 +113,11 @@
         .tabs {
             height: calc(100% - #{$nav-height-desktop})
         }
+    }
+
+    .m-select {
+        background: inherit !important;
+        color: inherit !important;
     }
 
     .tabs-content {
@@ -251,5 +270,16 @@
         }
     }
 
+    .mobile-date-picker {
+        position: absolute;
+        bottom: -300px;
+        left: 0;
+        width: 100%;
+        transition: bottom .3s ease;
+
+        &.show {
+            bottom: 0;
+        }
+    }
 
 </style>

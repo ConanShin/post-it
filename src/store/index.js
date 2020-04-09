@@ -32,7 +32,13 @@ export default new Vuex.Store({
         myPosts: [],
         teamPosts: [],
         finishedPosts: [],
-        workItems: []
+        workItems: [],
+        mobileCalendar: {
+            visible: false,
+            post: {
+                date: new Date()
+            }
+        }
     },
     mutations: {
         disableSearch: state => {
@@ -76,20 +82,24 @@ export default new Vuex.Store({
         },
         removePost: (state, postId) => {
             const removePostId = state.myPosts.findIndex(post => post.uid === postId)
-            state.myPosts.splice(removePostId, 1)
-        },
-        finishPost: (state, {postId, itemId, date}) => {
-            const finishedPost = Helper.deepcopy(state.myPosts.find(post => post.uid === postId))
-            finishedPost.done_yn = 'y'
-            finishedPost.item_id = itemId
-            finishedPost.date = date
-            state.finishedPosts.push(finishedPost)
-            const removePostId = state.myPosts.findIndex(post => post.uid === postId)
-            state.myPosts.splice(removePostId, 1)
+            if (removePostId >= 0) state.myPosts.splice(removePostId, 1)
         },
         addItem: (state, item) => {
             state.workItems.push(item)
         },
+        mobileCalendar: (state, {visible, post}) => {
+            state.mobileCalendar.visible = visible
+            if (!visible) {
+                state.mobileCalendar.post = null
+            } else {
+                state.mobileCalendar.post = post
+            }
+        },
+        mobileCalendarPostDate: (state, date) => {
+            state.mobileCalendar.post.date = date
+            state.mobileCalendar.visible = false
+            state.mobileCalendar.post = null
+        }
     },
     actions: {
         login: async (store) => {
@@ -143,10 +153,9 @@ export default new Vuex.Store({
             await axios.delete(`/post/${postId}`)
             store.commit('removePost', postId)
         },
-        finishPost : async (store, postData) => {
-            const {postId, itemId, date } = postData
-            await axios.put(`/post/finish/${postId}` , {date, item_id: parseInt(itemId)})
-            store.commit('finishPost', postData)
+        finishPost : async (store, post) => {
+            const {uid, item_id, date} = post
+            await axios.put(`/post/finish/${uid}` , {date, item_id: parseInt(item_id)})
         },
         fetchPosts: async store => {
             const {data: myPosts} = await axios.get('/post/me')
@@ -182,7 +191,11 @@ export default new Vuex.Store({
         filteredFinishedPosts: state => {
             const myDonePosts = state.myPosts.filter(post => post.done_yn === 'y')
             const sortByDate = [...myDonePosts, ...state.finishedPosts].sort((a, b) => new Date(b.date) - new Date(a.date))
+            sortByDate.forEach(post => {
+                post.item_name = state.workItems.find(item => item.id === post.item_id).name
+            })
             return sortByDate.filter(post => post.text.includes(state.searchKeyword) || post.name.includes(state.searchKeyword))
-        }
+        },
+        mobileCalendar: state => state.mobileCalendar
     }
 })

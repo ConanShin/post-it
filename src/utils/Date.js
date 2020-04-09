@@ -1,6 +1,4 @@
-
-
-
+import moment from 'moment';
 const dateToString = date => date.getFullYear() + "/" + date.getMonth()+1 + "/" + date.getDay()
 const isToday = date => {
     const targetDate = new Date(date)
@@ -28,5 +26,8 @@ const monthMapper = date => {
         'July', 'August', 'September', 'October', 'November', 'December']
     return monthName[date.getMonth()]
 }
+const momentYYYYMMDDWithDash = date => {
+    return moment(date).format('YYYY-MM-DD')
+}
 
-export default {dateToString, isToday, isWeekend, nthWeek, monthMapper}
+export default {dateToString, isToday, isWeekend, nthWeek, monthMapper, momentYYYYMMDDWithDash}
