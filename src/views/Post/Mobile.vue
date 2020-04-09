@@ -18,7 +18,7 @@
     import {Vue, Component} from 'vue-property-decorator'
     import RollUp from "./Components/RollUp"
     import DateUtil from '@/utils/Date'
-    
+
     @Component({
         components: {RollUp}
     })
@@ -62,12 +62,9 @@
         }
 
         hasSchedule(week) {
-            console.log(week)
             if(week.length === 0) return false;
             return true;
         }
-
-
     }
 </script>
 

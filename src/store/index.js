@@ -72,7 +72,6 @@ export default new Vuex.Store({
             state.myPosts.splice(removePostId, 1)
         },
         finishPost: (state, postData) => {
-            console.log("mutation", postData)
             const finishedPost = Helper.deepcopy(state.myPosts.find(post => post.uid === postData.postId))
             finishedPost.done_yn = 'y'
             state.finishedPosts.push(finishedPost)
@@ -136,22 +135,18 @@ export default new Vuex.Store({
             store.commit('removePost', postId)
         },
         finishPost : async (store, postData) => {
-            console.log("action", postData)
             const {postId, itemId, date } = postData
             const ret = await axios.put(`/post/finish/${postId}` , { "date" : date, "item_id" : parseInt(itemId) } )
-            console.log("axios put ret", ret)
             store.commit('finishPost', postData)
         },
         fetchPosts: async store => {
             const {data: myPosts} = await axios.get('/post/me')
             const {data: teamPosts} = await axios.get('/post/team')
             const {data: donePosts} = await axios.get('/post/done')
-            console.log("donePosts", donePosts)
             store.commit('setPosts', {myPosts, teamPosts, donePosts})
         },
         fetchItems: async store => {
             const {data: items} = await axios.get('/item')
-            console.log("fetch items", items)
             store.commit('setItems', items)
         },
         newItem: async (store, text) => {
@@ -177,7 +172,6 @@ export default new Vuex.Store({
         },
         filteredFinishedPosts: state => {
             const myDonePosts = state.myPosts.filter(post => post.done_yn === 'y')
-            console.log(myDonePosts)
             const sortByDate = [...myDonePosts, ...state.finishedPosts].sort((a, b) => new Date(b.date) - new Date(a.date))
             return sortByDate.filter(post => post.text.includes(state.searchKeyword) || post.name.includes(state.searchKeyword))
         }

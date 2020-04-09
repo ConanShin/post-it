@@ -61,7 +61,6 @@
                     tasksItems[itemIndex].push(post)
                 }
             })
-            console.log("task Items", tasksItems)
             return tasksItems
         }
 
@@ -73,7 +72,6 @@
                 tasksInWeek[nthWeek].push(post)
             })
 
-            console.log("item tasks", itemTasks)
             return tasksInWeek
         }
 
@@ -133,7 +131,6 @@
         }
 
         saveNewItem() {
-            console.log(this.newItem)
             this.$store.dispatch('newItem', this.newItem.text)
             this.resetNewItem()
         }
