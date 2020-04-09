@@ -115,13 +115,13 @@ export default new Vuex.Store({
             SessionStorage.save('myColor', color)
             store.state.postColor = color
 
-            VueRouter.push({name: 'Post'})
+            window.location = '/post'
         },
         logout: async store => {
             await KakaoConnector.logout()
+            window.location = '/'
             SessionStorage.flush()
-            VueRouter.push({name: 'Login'})
-            location.reload() // reload 없으면 카카오 로그인이 Promise return을 하지 않는다..?
+            // location.reload() // reload 없으면 카카오 로그인이 Promise return을 하지 않는다..?
         },
         updateColor: async (store, color) => {
             store.state.postColor = color
