@@ -276,6 +276,7 @@
         left: 0;
         width: 100%;
         height: 0;
+        overflow: hidden;
         transition: height .3s ease;
 
         &.show {
