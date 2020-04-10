@@ -23,6 +23,7 @@
     "@vue/cli-plugin-vuex": "~4.2.0",
     "@vue/cli-service": "~4.2.0",
     "axios": "^0.19.2",
+    "pulltorefreshjs": "^0.1.20",
     "sass": "^1.25.0",
     "sass-loader": "^8.0.2",
     "vue-click-outside": "^1.0.7",

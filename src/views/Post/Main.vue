@@ -21,7 +21,8 @@
             <dashboard class="page"></dashboard>
         </tabs>
         <inlineCalendar class="mobile-date-picker" :class="{'show': $store.getters.mobileCalendar.visible}"
-                        yearName="" :monthNames="months" :weekNames="weeks" :dayClick="dateSelected" v-click-outside="hideMobileCalendar"/>
+                        yearName="" :monthNames="months" :weekNames="weeks" :dayClick="dateSelected"
+                        v-click-outside="hideMobileCalendar"/>
     </div>
 </template>
 
@@ -35,6 +36,7 @@
     import TeamPost from './Team'
     import SessionStorage from '@/utils/SessionStorage'
     import DateUtil from '@/utils/Date'
+    import PullToRefresh from "pulltorefreshjs";
 
     const isDesktop = window.screen.width > 758
     @Component({
@@ -56,6 +58,16 @@
         async beforeMount() {
             await this.$store.dispatch('fetchItems')
             await this.$store.dispatch('fetchPosts')
+        }
+
+        mounted() {
+            const _this = this
+            PullToRefresh.init({
+                mainElement: '.tabs',
+                async onRefresh() {
+                    await _this.$store.dispatch('fetchPosts')
+                }
+            })
         }
 
         get postColor() {
@@ -93,6 +105,7 @@
             const selectedDate = DateUtil.momentYYYYMMDDWithDash(new Date(value.$d))
             this.$store.commit('mobileCalendarPostDate', selectedDate)
         }
+
         hideMobileCalendar() {
             return this.$store.commit('mobileCalendar', {visible: false})
         }
