@@ -4,7 +4,6 @@ import axios from 'axios'
 import VueRouter from '../router'
 import KakaoConnector from '@/utils/Kakao'
 import SessionStorage from '@/utils/SessionStorage'
-import Helper from '@/utils/HelperMethods'
 Vue.use(Vuex)
 
 axios.defaults.baseURL = 'http://postit.conanshin.tech:5002/'
@@ -115,11 +114,11 @@ export default new Vuex.Store({
             SessionStorage.save('myColor', color)
             store.state.postColor = color
 
-            window.location = '/post'
+            VueRouter.push({name: 'Post'})
         },
         logout: async store => {
             await KakaoConnector.logout()
-            window.location = '/'
+            VueRouter.push({name: 'Login'})
             SessionStorage.flush()
             // location.reload() // reload 없으면 카카오 로그인이 Promise return을 하지 않는다..?
         },
