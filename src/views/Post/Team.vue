@@ -1,6 +1,7 @@
 <template>
     <div class="team-page">
         <article class="post-it-area">
+            <div class="block" v-if="postList.length === 0">&nbsp;</div>
             <post-it v-for="post in postList" :post="post" :key="'team-' + post.uid"></post-it>
         </article>
     </div>
@@ -27,5 +28,8 @@
     }
     .post-it-area {
         @include post-it-area;
+    }
+    .block {
+        height: 1px;
     }
 </style>

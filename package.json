@@ -5,7 +5,7 @@
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
-    "deploy": "npm run build && scp -r ./dist bitnami@52.79.142.42:/home/bitnami/workspace/post-it/"
+    "deploy": "npm run build && scp -r ./dist postitadmin@52.231.89.179:/home/postitadmin/workspace/post-it"
   },
   "dependencies": {
     "core-js": "^3.6.4",
