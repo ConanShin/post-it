@@ -144,7 +144,7 @@
         padding: 10px 0;
         top: -10px;
         position: relative;
-        overflow: scroll;
+        overflow: auto;
     }
 
 
