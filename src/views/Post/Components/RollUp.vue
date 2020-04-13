@@ -42,8 +42,7 @@
     }
     .post-rollup-body{
         margin-left: 20px;
-        white-space: initial;
-        word-break: break-word;
+        white-space: pre-wrap;
     }
     .post-rollup-title{
         font-weight: 600!important;
