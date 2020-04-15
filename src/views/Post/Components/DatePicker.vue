@@ -53,8 +53,8 @@
 
     @include mobile {
         .calendar {
-            position: fixed;
-            bottom: 0;
+            position: absolute;
+            bottom: -20px;
             left: 0;
             width: 100%;
             height: 0;

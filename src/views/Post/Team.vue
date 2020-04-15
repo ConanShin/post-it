@@ -21,6 +21,16 @@
     }
 </script>
 
+<style lang="scss">
+    @import '@/utils/MediaQuery.scss';
+
+    @include mobile {
+        .team-page .date-picker .calendar {
+            bottom: -19px;
+        }
+    }
+</style>
+
 <style scoped lang="scss">
     @import "@/utils/Common.scss";
     .team-page {

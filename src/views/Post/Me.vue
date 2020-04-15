@@ -6,7 +6,7 @@
         </article>
         <div v-if="newPost.visible" class="new-post" :style="{'background-color': currentColor}">
             <div @click="saveNewPost" class="save-new-post button">save</div>
-            <date-picker class="date-picker" :defaultDate="newPost.date" @setDate="dateChange"></date-picker>
+            <date-picker class="date-picker-for-new" :defaultDate="newPost.date" @setDate="dateChange"></date-picker>
             <div @click="closeAddPost" class="close-add-post button">cancel</div>
             <textarea v-model="newPost.text"></textarea>
         </div>
@@ -61,6 +61,20 @@
     }
 </script>
 
+<style lang="scss">
+    @import '@/utils/MediaQuery.scss';
+
+    @include mobile {
+        .date-picker-for-new .calendar{
+            position: fixed;
+            bottom: 0 !important;
+        }
+        .me-page .date-picker .calendar {
+            bottom: -25px;
+        }
+    }
+</style>
+
 <style scoped lang="scss">
     @import "@/utils/Common.scss";
     @import '@/utils/MediaQuery.scss';
@@ -108,7 +122,7 @@
             right: 23px;
         }
 
-        .date-picker {
+        .date-picker-for-new {
             display: inline-block;
             position: absolute;
             top: 15px;
