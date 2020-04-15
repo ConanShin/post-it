@@ -4,16 +4,18 @@
             <template v-if="post.isMyPost && !finishingPost.visible">
                 <template v-if="post.editable">
                     <div class="save-button" @click.stop.prevent="savePost">save</div>
+                    <date-picker :defaultDate="new Date(post.newDate)" @setDate="dateChange"></date-picker>
                     <div class="cancel-button" @click.stop.prevent="cancel">cancel</div>
                 </template>
                 <template v-else>
-                    <img v-if="isPublished&&!isFinished" class="finish-button" @click="finishPost" src="@/assets/finish-flag.png"/>
+                    <img v-if="isPublished&&!isFinished" class="finish-button" @click="showFinishingPost" src="@/assets/finish-flag.png"/>
                     <img class="delete-button" @click="deletePost" src="@/assets/trashcan.png"/>
                     <img v-if="!isPublished" class="publish-button" @click="publishPost" src="@/assets/plane.png"/>
+                    <div class="date-field">{{DateUtil.dateToString(new Date(post.date))}}</div>
                 </template>
             </template>
         </div>
-        <textarea v-if="post.isMyPost" v-model="post.newNote" @click="editPost" class="editable textarea" :readonly="!post.editable" autofocus></textarea>
+        <textarea v-if="post.isMyPost" v-model="post.newNote" @click="editPost" class="editable textarea" :readonly="!post.editable"></textarea>
         <textarea v-else v-model="post.text" class="editable textarea" readonly></textarea>
         <div v-if="finishingPost.visible" class="publishing-post" >
             <div>
@@ -25,15 +27,8 @@
                     </option>
                 </select>
             </div>
-            <div v-if="isDesktop">
-                날짜: <datepicker class="date-picker" v-model="finishingPost.date" input-class="date-field" :value="finishingPost.date"></datepicker>
-            </div>
-            <div v-else>
-                날짜: <div @click.stop.prevent="$store.commit('mobileCalendar', {visible: true, post: finishingPost})" class="date-field">{{finishingPost.date}}</div>
-            </div>
-
             <div @click="saveFinishingPost" class="finishing-post-button button">저장</div>
-            <div @click="closeFinishingPost" class="finishing-post-button button">취소</div>
+            <div @click="resetFinishingPost" class="finishing-post-button button">취소</div>
         </div>
         <div v-if="!post.editable" class="author">{{name}}</div>
     </div>
@@ -43,18 +38,16 @@
     import {Vue, Component, Prop} from 'vue-property-decorator'
     import Color from "@/model/Color";
     import Helper from '@/utils/HelperMethods'
-    import DateUtil from '@/utils/Date'
-    import Datepicker from 'vuejs-datepicker';
+    import DatePicker from './DatePicker'
 
     @Component({
-        components: {Datepicker}
+        components: {DatePicker}
     })
     export default class PostIt extends Vue {
         @Prop() post
         finishingPost = {
             visible: false,
-            itemId: '',
-            date: DateUtil.momentYYYYMMDDWithDash(new Date())
+            itemId: ''
         }
 
         get currentColor() {
@@ -78,10 +71,6 @@
         get itemList() {
             return this.$store.getters.items
         }
-        get isDesktop() {
-            return window.screen.width > 758
-        }
-
         editPost() {
             this.$store.commit('disableSearch')
             this.post.editable = true
@@ -99,6 +88,7 @@
             this.$store.commit('enableSearch')
             this.post.editable = false
             this.post.newNote = this.post.text
+            this.post.newDate = this.post.date
         }
 
         publishPost() {
@@ -109,24 +99,19 @@
             Helper.confirmAction('삭제 하시겠습니까?', () => this.$store.dispatch('deletePost', this.post.uid))
         }
 
+        dateChange(newDate) {
+            this.post.newDate = new Date(newDate)
+        }
+
         // finishing post
         resetFinishingPost() {
             this.finishingPost.visible = false
             this.finishingPost.itemId = ''
-            this.finishingPost.date = DateUtil.momentYYYYMMDDWithDash(new Date())
             this.post.editable = false
-        }
-
-        finishPost() {
-            this.showFinishingPost();
         }
 
         showFinishingPost(){
             this.finishingPost.visible = true
-        }
-
-        closeFinishingPost() {
-            this.resetFinishingPost()
         }
 
         saveFinishingPost() {
@@ -135,7 +120,6 @@
             }
             if (confirm('완료처리 하시겠습니까?')) {
                 this.post.item_id = this.finishingPost.itemId
-                this.post.date = DateUtil.momentYYYYMMDDWithDash(this.finishingPost.date)
                 this.post.done_yn = 'y'
                 this.$store.dispatch('finishPost', this.post)
             }
@@ -143,30 +127,6 @@
         }
     }
 </script>
-
-<style lang="scss">
-    @import "@/utils/MediaQuery.scss";
-
-    .date-field {
-        border-radius: 4px;
-        border-width: 1px;
-        display: inline-block;
-        background: white;
-        padding: 0 10px;
-        margin-top: 5px;
-    }
-
-    @include desktop {
-        .date-field {
-            margin-left: 0;
-        }
-    }
-    @include mobile {
-        .date-field {
-            margin-left: 12px;
-        }
-    }
-</style>
 
 <style scoped lang="scss">
     @import "@/utils/Common.scss";
@@ -238,8 +198,11 @@
 
     .date-picker {
         display: inline-flex;
-        margin-left: 8px;
-        margin-top: 3px;
-        width: 140px;
+        margin-left: 30px;
+    }
+    .date-field {
+        font-size: 12px;
+        margin-top: 1px;
+        margin-left: 59px;;
     }
 </style>

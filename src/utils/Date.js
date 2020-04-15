@@ -1,5 +1,5 @@
 import moment from 'moment';
-const dateToString = date => date.getFullYear() + "/" + date.getMonth()+1 + "/" + date.getDay()
+const dateToString = date => date.getFullYear() + "년 " + (date.getMonth()+1) + "월 " + date.getDate() + "일"
 const isToday = date => {
     const targetDate = new Date(date)
     const today = new Date()

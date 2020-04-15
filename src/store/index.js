@@ -31,13 +31,7 @@ export default new Vuex.Store({
         myPosts: [],
         teamPosts: [],
         finishedPosts: [],
-        workItems: [],
-        mobileCalendar: {
-            visible: false,
-            post: {
-                date: new Date()
-            }
-        }
+        workItems: []
     },
     mutations: {
         disableSearch: state => {
@@ -53,6 +47,7 @@ export default new Vuex.Store({
             state.myPosts = payload.myPosts.map(post => {
                 post.isMyPost = true
                 post.newNote = post.text
+                post.newDate = post.date
                 post.editable = false
                 return post
             })
@@ -64,6 +59,7 @@ export default new Vuex.Store({
         },
         updatePost: (state, post) => {
             post.text = post.newNote
+            post.date = post.newDate
         },
         publishPost: (state, postId) => {
             state.myPosts.find(post => post.uid === postId).private_yn = 'n'
@@ -74,6 +70,7 @@ export default new Vuex.Store({
         addPost: (state, post) => {
             post.isMyPost = true
             post.newNote = post.text
+            post.newDate = post.date
             post.editable = false
             post.name = state.userName
             post.color = state.postColor
@@ -85,19 +82,6 @@ export default new Vuex.Store({
         },
         addItem: (state, item) => {
             state.workItems.push(item)
-        },
-        mobileCalendar: (state, {visible, post}) => {
-            state.mobileCalendar.visible = visible
-            if (!visible) {
-                state.mobileCalendar.post = null
-            } else {
-                state.mobileCalendar.post = post
-            }
-        },
-        mobileCalendarPostDate: (state, date) => {
-            state.mobileCalendar.post.date = date
-            state.mobileCalendar.visible = false
-            state.mobileCalendar.post = null
         }
     },
     actions: {
@@ -132,8 +116,8 @@ export default new Vuex.Store({
             await axios.put('/user', {name: newName})
             SessionStorage.user().saveName(newName)
         },
-        newPost: async (store, text) => {
-            const {data} = await axios.post('/post', {text})
+        newPost: async (store, newPost) => {
+            const {data} = await axios.post('/post', {date: newPost.date, text: newPost.text})
             store.commit('addPost', data)
         },
         unpublishPost: async (store, postId) => {
@@ -145,7 +129,7 @@ export default new Vuex.Store({
             store.commit('publishPost', postId)
         },
         updatePost: async (store, post) => {
-            await axios.put(`/post/${post.uid}`, {text: post.newNote})
+            await axios.put(`/post/${post.uid}`, {date: post.newDate, text: post.newNote})
             store.commit('updatePost', post)
         },
         deletePost: async (store, postId) => {
@@ -153,8 +137,8 @@ export default new Vuex.Store({
             store.commit('removePost', postId)
         },
         finishPost : async (store, post) => {
-            const {uid, item_id, date} = post
-            await axios.put(`/post/finish/${uid}` , {date, item_id: parseInt(item_id)})
+            const {uid, item_id} = post
+            await axios.put(`/post/finish/${uid}` , {item_id: parseInt(item_id)})
         },
         fetchPosts: async store => {
             const {data: myPosts} = await axios.get('/post/me')
@@ -194,7 +178,6 @@ export default new Vuex.Store({
                 post.item_name = state.workItems.find(item => item.id === Number(post.item_id)).name
             })
             return sortByDate.filter(post => post.text.includes(state.searchKeyword) || post.name.includes(state.searchKeyword))
-        },
-        mobileCalendar: state => state.mobileCalendar
+        }
     }
 })

@@ -5,9 +5,10 @@
             <post-it v-for="post in postList" :post="post" :key="'me-' + post.uid"></post-it>
         </article>
         <div v-if="newPost.visible" class="new-post" :style="{'background-color': currentColor}">
-            <textarea v-model="newPost.text"></textarea>
             <div @click="saveNewPost" class="save-new-post button">save</div>
+            <date-picker class="date-picker" :defaultDate="newPost.date" @setDate="dateChange"></date-picker>
             <div @click="closeAddPost" class="close-add-post button">cancel</div>
+            <textarea v-model="newPost.text"></textarea>
         </div>
     </div>
 </template>
@@ -15,14 +16,16 @@
 <script>
     import {Vue, Component} from 'vue-property-decorator'
     import PostIt from './Components/PostIt'
+    import DatePicker from './Components/DatePicker'
 
     @Component({
-        components: {PostIt}
+        components: {PostIt, DatePicker}
     })
     export default class Me extends Vue {
         newPost = {
             visible: false,
-            text: ''
+            text: '',
+            date: new Date()
         }
 
         get currentColor() {
@@ -33,9 +36,13 @@
             return this.$store.getters.filteredMyPosts
         }
 
+        dateChange(newDate) {
+            this.newPost.date = new Date(newDate)
+        }
         resetNewPost() {
             this.newPost.visible = false
             this.newPost.text = ''
+            this.newPost.date = new Date()
         }
 
         showAddPost() {
@@ -47,7 +54,7 @@
         }
 
         saveNewPost() {
-            this.$store.dispatch('newPost', this.newPost.text)
+            this.$store.dispatch('newPost', this.newPost)
             this.resetNewPost()
         }
 
@@ -89,7 +96,7 @@
         textarea {
             display: inline-block;
             font-size: inherit;
-            width: 200px;
+            width: 230px;
             height: 200px;
             @include post-it;
             background-color: transparent;
@@ -99,6 +106,13 @@
             position: absolute;
             top: 10px;
             right: 23px;
+        }
+
+        .date-picker {
+            display: inline-block;
+            position: absolute;
+            top: 15px;
+            left: 80px;
         }
 
         .save-new-post {
