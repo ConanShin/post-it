@@ -1,18 +1,20 @@
 <template>
     <div class="post-it" :style="{'background-color': currentColor}">
         <div class="menu">
-            <template v-if="post.isMyPost&&!finishingPost.visible">
-                <img v-if="!post.editable&&isPublished&&!isFinished" class="finish-button" @click="finishPost" src="@/assets/finish-flag.png"/>
-                <img class="delete-button" @click="deletePost" src="@/assets/trashcan.png"/>
-                <img v-if="!post.editable&&!isPublished" class="publish-button" @click="publishPost" src="@/assets/plane.png"/>
-<!--                <img v-if="!post.editable&&isPublished" class="publish-button" @click="unpublishPost" src="@/assets/private.png"/>-->
-                <img v-if="post.editable" class="save-button" @click="savePost" src="@/assets/document-check.png"/>
-                <img v-if="!post.editable" class="edit-button" @click="editPost" src="@/assets/pencil.png"/>
+            <template v-if="post.isMyPost && !finishingPost.visible">
+                <template v-if="post.editable">
+                    <div class="save-button" @click.stop.prevent="savePost">save</div>
+                    <div class="cancel-button" @click.stop.prevent="cancel">cancel</div>
+                </template>
+                <template v-else>
+                    <img v-if="isPublished&&!isFinished" class="finish-button" @click="finishPost" src="@/assets/finish-flag.png"/>
+                    <img class="delete-button" @click="deletePost" src="@/assets/trashcan.png"/>
+                    <img v-if="!isPublished" class="publish-button" @click="publishPost" src="@/assets/plane.png"/>
+                </template>
             </template>
         </div>
-        <textarea v-if="post.editable" v-model="post.newNote" class="editable textarea">
-        </textarea>
-        <div v-else class="textarea">{{post.text}}</div>
+        <textarea v-if="post.isMyPost" v-model="post.newNote" @click="editPost" class="editable textarea" :readonly="!post.editable" autofocus></textarea>
+        <textarea v-else v-model="post.text" class="editable textarea" readonly></textarea>
         <div v-if="finishingPost.visible" class="publishing-post" >
             <div>
                 아이템:
@@ -83,20 +85,20 @@
         editPost() {
             this.$store.commit('disableSearch')
             this.post.editable = true
+            this.$nextTick(() => {
+                this.$el.querySelector('textarea').focus()
+            })
         }
 
         savePost() {
             this.$store.commit('enableSearch')
             this.post.editable = false
-            if (confirm('저장 하시겠습니까?')) {
-                this.$store.dispatch('updatePost', this.post)
-            } else {
-                this.post.newNote = this.post.text
-            }
+            this.$store.dispatch('updatePost', this.post)
         }
-
-        unpublishPost() {
-            Helper.confirmAction('비공개로 전환 하시겠습니까?', () => this.$store.dispatch('unpublishPost', this.post.uid))
+        cancel() {
+            this.$store.commit('enableSearch')
+            this.post.editable = false
+            this.post.newNote = this.post.text
         }
 
         publishPost() {
@@ -182,8 +184,15 @@
     .menu {
         height: 21px;
         margin-bottom: 5px;
+        .save-button, .cancel-button {
+            display: inline-block;
+            cursor: pointer;
+        }
+        .cancel-button {
+            float: right;
+        }
 
-        .delete-button, .finish-button, .edit-button, .save-button, .publish-button {
+        .delete-button, .finish-button, .publish-button {
             height: 13px;
             cursor: pointer;
             padding: 3px;
@@ -191,7 +200,7 @@
             @include embossed-button;
         }
 
-        .edit-button, .finish-button, .publish-button, .save-button, .delete-button {
+        .delete-button, .finish-button, .publish-button {
             float: right;
         }
     }
