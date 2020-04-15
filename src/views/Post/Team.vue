@@ -24,6 +24,13 @@
 <style lang="scss">
     @import '@/utils/MediaQuery.scss';
 
+    @include desktop {
+        .team-page .date-picker .calendar {
+            margin-left: -87px;
+            margin-top: 26px;
+        }
+    }
+
     @include mobile {
         .team-page .date-picker .calendar {
             bottom: -19px;

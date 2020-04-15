@@ -11,12 +11,12 @@
                     <img v-if="isPublished&&!isFinished" class="finish-button" @click="showFinishingPost" src="@/assets/finish-flag.png"/>
                     <img class="delete-button" @click="deletePost" src="@/assets/trashcan.png"/>
                     <img v-if="!isPublished" class="publish-button" @click="publishPost" src="@/assets/plane.png"/>
-                    <div class="date-field">{{DateUtil.dateToString(new Date(post.date))}}</div>
                 </template>
             </template>
+            <div v-if="!post.editable" class="date-field">{{DateUtil.dateToString(new Date(post.date))}}</div>
         </div>
-        <textarea v-if="post.isMyPost" v-model="post.newNote" @click="editPost" class="editable textarea" :readonly="!post.editable"></textarea>
-        <textarea v-else v-model="post.text" class="editable textarea" readonly></textarea>
+        <textarea v-if="post.isMyPost" v-model="post.newNote" @click.stop.prevent="editPost" class="editable textarea" :readonly="!post.editable"></textarea>
+        <div v-else class="editable textarea">{{post.text}}</div>
         <div v-if="finishingPost.visible" class="publishing-post" >
             <div>
                 아이템:
@@ -49,6 +49,12 @@
             visible: false,
             itemId: ''
         }
+        mounted() {
+            this.$el.querySelector('.editable.textarea').addEventListener('ontouchstart', function (e) {
+                console.log('hello')
+                e.target.focus()
+            })
+        }
 
         get currentColor() {
             if (this.post.isMyPost) {
@@ -75,6 +81,8 @@
             this.$store.commit('disableSearch')
             this.post.editable = true
             this.$nextTick(() => {
+                // document.querySelector('.search-bar').click()
+                this.$el.querySelector('textarea').blur()
                 this.$el.querySelector('textarea').focus()
             })
         }

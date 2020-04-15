@@ -39,6 +39,7 @@
         dateChange(newDate) {
             this.newPost.date = new Date(newDate)
         }
+
         resetNewPost() {
             this.newPost.visible = false
             this.newPost.text = ''
@@ -64,8 +65,15 @@
 <style lang="scss">
     @import '@/utils/MediaQuery.scss';
 
+    @include desktop {
+        .me-page .date-picker .calendar {
+            margin-left: -87px;
+            margin-top: 26px;
+        }
+    }
+
     @include mobile {
-        .date-picker-for-new .calendar{
+        .date-picker-for-new .calendar {
             position: fixed;
             bottom: 0 !important;
         }
@@ -135,9 +143,11 @@
             left: 16px;
         }
     }
+
     .add-new-post {
         margin: 8px;
     }
+
     .button {
         cursor: pointer;
         display: inline-block;
