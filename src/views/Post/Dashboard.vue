@@ -17,8 +17,9 @@
             </thead>
             <tbody>
             <tr class="progress-tr" v-for="(itemPosts, index) in donePostsEachItem">
-                <!-- <td class="progress-cell item-name-cell"> {{ itemList[index] ? itemList[index] : 'undefined'}}</td> -->
-                <td class="progress-cell item-name-cell"> {{ itemList[index] ? itemList[index].name.split(',').join('\n') : 'undefined'}}</td>
+                <td class="progress-cell item-name-cell"> {{ itemList[index] ?
+                    itemList[index].name.split(',').join('\n') : 'undefined'}}
+                </td>
                 <td class="progress-cell task-cell" v-for="posts in postsInWeek(itemPosts)">
                     <div v-for="post in posts" class="done-task" :style="{'backgroundColor': post.color}"
                          @click.stop.prevent="() => showPost(post)">{{post.text}}
@@ -49,14 +50,10 @@
 
         get donePostsEachItem() {
             this.hidePost()
-            const tasksItems = Array.from({length: this.itemList.length + 1}, e => [])
+            const tasksItems = Array.from({length: this.itemList.length}, e => [])
             this.$store.getters.filteredFinishedPosts.forEach(post => {
                 const itemIndex = this.itemList.findIndex(item => item.id === Number(post.item_id))
-                if (itemIndex === -1) { // item지정 안된것도 보여주기
-                    tasksItems[this.itemList.length].push(post)
-                } else {
-                    tasksItems[itemIndex].push(post)
-                }
+                tasksItems[itemIndex].push(post)
             })
             return tasksItems
         }
