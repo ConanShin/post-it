@@ -127,7 +127,7 @@
         .close-add-post {
             position: absolute;
             top: 10px;
-            right: 23px;
+            right: 0;
         }
 
         .date-picker-for-new {
@@ -140,7 +140,7 @@
         .save-new-post {
             position: absolute;
             top: 10px;
-            left: 16px;
+            left: 0;
         }
     }
 
