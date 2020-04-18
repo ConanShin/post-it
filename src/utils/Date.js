@@ -1,5 +1,5 @@
 import moment from 'moment';
-const KOREAN_DAY = ["일", "월", "화", "수", "목", "금", ""]
+const KOREAN_DAY = ["일", "월", "화", "수", "목", "금", "토"]
 const dateToString = date => date.getFullYear() + "년 " + (date.getMonth()+1) + "월 " + date.getDate() + "일" + "(" + KOREAN_DAY[date.getDay()] + ")"
 const isToday = date => {
     const targetDate = new Date(date)
