@@ -22,6 +22,10 @@ const nthWeek = date => {
     return result
 }
 
+const belongsToThisMonth = (targetDate, nowDate) => {
+    return targetDate.getMonth() === nowDate.getMonth() && targetDate.getFullYear() === nowDate.getFullYear()
+}
+
 const monthMapper = date => {
     const monthName = ['January', 'February', 'March', 'April', 'May', 'June',
         'July', 'August', 'September', 'October', 'November', 'December']
@@ -31,4 +35,4 @@ const momentYYYYMMDDWithDash = date => {
     return moment(date).format('YYYY-MM-DD')
 }
 
-export default {dateToString, isToday, isWeekend, nthWeek, monthMapper, momentYYYYMMDDWithDash}
+export default {dateToString, isToday, isWeekend, nthWeek, belongsToThisMonth, monthMapper, momentYYYYMMDDWithDash}
