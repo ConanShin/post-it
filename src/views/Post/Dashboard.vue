@@ -14,7 +14,7 @@
             <thead>
             <tr class="progress-tr week-name">
                 <th class="progress-cell item-name-cell"></th>
-                <th class="progress-cell" v-for="(days, index) in weeks"> week {{index + 1}}</th>
+                <th class="progress-cell" v-for="(days, index) in numOfWeeks"> week {{index + 1}}</th>
             </tr>
             </thead>
             <tbody>
@@ -64,10 +64,56 @@
             return DateUtil.monthMapper(this.now)
         }
 
-        get weeks() {
+        get datesInMonth(){
+            const firstDayOfThisMonth = new Date(this.now.getFullYear(), this.now.getMonth(), 1);
             const lastDayOfThisMonth = new Date(this.now.getFullYear(), this.now.getMonth()+1, 0);
-            const numberOfWeeks = DateUtil.nthWeek(lastDayOfThisMonth)
-            return [...Array(numberOfWeeks).keys()]
+            var dateArray = new Array();
+            var currentDate = firstDayOfThisMonth;
+            while (currentDate <= lastDayOfThisMonth) {
+                dateArray.push(new Date(currentDate));
+                currentDate.setDate(currentDate.getDate()+1)
+            }
+            // console.log(dateArray)
+            return dateArray;
+        }
+
+        get sundaysInThisMonth() {
+            const sundaysInMonth = this.datesInMonth.filter(value => value.getDay() === 0);
+
+            const firstSunday = new Date(sundaysInMonth[0]);
+            const previousSunday = new Date(firstSunday.getFullYear(), firstSunday.getMonth(), firstSunday.getDate()-7);
+            const lastSunday = new Date(sundaysInMonth[sundaysInMonth.length-1]);
+            const nextSunday = new Date(lastSunday.getFullYear(), lastSunday.getMonth(), lastSunday.getDate()+7);
+            const dayAfterLastSunday = new Date(lastSunday.getFullYear(), lastSunday.getMonth(), lastSunday.getDate()+1);
+
+            // console.log("SEE HERE!!!", previousSunday, firstSunday, lastSunday, nextSunday)
+
+            var sundaysIncludingPrevAndNextWeek = [...sundaysInMonth]
+            // console.log("sundaysIncludingPrevAndNextWeek", sundaysIncludingPrevAndNextWeek)
+            if(firstSunday.getDate() !== 1) { // 첫날이 아닌 경우 이전 주에도 이번달의 일부가 있음
+                sundaysIncludingPrevAndNextWeek.unshift(previousSunday)
+            }
+            // console.log("sundaysIncludingPrevAndNextWeek", sundaysIncludingPrevAndNextWeek)
+            if(dayAfterLastSunday.getMonth() === lastSunday.getMonth()) {
+                sundaysIncludingPrevAndNextWeek.push(nextSunday)
+            }
+            // console.log("sundaysIncludingPrevAndNextWeek", sundaysIncludingPrevAndNextWeek)
+
+            return sundaysIncludingPrevAndNextWeek;
+        }
+
+        get numOfWeeks(){
+            return this.sundaysInThisMonth.length-1
+        }
+
+        nthWeek(date){
+            const idx = this.sundaysInThisMonth.findIndex(value => {
+                const comp = date < value
+                console.log("comp", date , "<", value, "is" , comp)
+                return comp
+            })
+            console.log("idx", idx)
+            return idx
         }
 
         goToPreviousMonth() {
@@ -97,13 +143,13 @@
         }
 
         getPostListByWeek(itemTasks) {
-            const tasksInWeek = Array.from({length: this.weeks.length}, e => [])
+            const tasksInWeek = Array.from({length: this.numOfWeeks}, e => [])
             itemTasks.forEach(post => {
                 const postDate = new Date(post.date)
-                if(DateUtil.belongsToThisMonth(postDate, this.now)){
-                    const nthWeek = DateUtil.nthWeek(postDate) - 1 // index conversion
-                    tasksInWeek[nthWeek].push(post)
-                }
+                const nthWeek = this.nthWeek(postDate)
+                if(nthWeek > 0)
+                    tasksInWeek[nthWeek-1].push(post)
+
             })
             return tasksInWeek
         }

@@ -9,9 +9,27 @@ const isToday = date => {
 const isWeekend = date => {
     return date.getDay() === 0 || date.getDay() === 6
 }
+// const nthWeek = date => {
+//     let day
+//     if (date.getDay() === 0) day = 7 // 일요일
+//     else day = date.getDay()
+//
+//     const fullWeeksBetween = parseInt(date.getDate() / 7)
+//     const leftDays = date.getDate % 7
+//
+//     let result = fullWeeksBetween + 1
+//     if (day - leftDays > 0) result += 1
+//     return result
+// }
+
 const nthWeek = date => {
+    // 이 달 첫날은 무슨요일?
+    const firstDayOfThisMonth = new Date(date.getFullYear(), date.getMonth(), 1);
+    // console.log("첫날", firstDayOfThisMonth, firstDayOfThisMonth.getDay()) // 1 : 월요일
+    // date/7 =
+
     let day
-    if (date.getDay() === 0) day = 7
+    if (date.getDay() === 0) day = 7 // 일요일
     else day = date.getDay()
 
     const fullWeeksBetween = parseInt(date.getDate() / 7)
