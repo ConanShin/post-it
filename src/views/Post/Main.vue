@@ -45,7 +45,7 @@
         tabs = [
             {label: 'Me'},
             {label: 'Team'},
-            {label: 'Progress'}
+            {label: 'Done'}
         ]
 
         async beforeMount() {

@@ -14,7 +14,7 @@
             <thead>
             <tr class="progress-tr week-name">
                 <th class="progress-cell item-name-cell"></th>
-                <th class="progress-cell" v-for="(days, index) in numOfWeeks"> week {{index + 1}}</th>
+                <th class="progress-cell" v-for="(days, index) in numOfWeeks"> week {{index + 1}} ( ww{{getWorkWeek(startingDays[index+1])}} )</th>
             </tr>
             </thead>
             <tbody>
@@ -64,6 +64,10 @@
             return DateUtil.monthMapper(this.now)
         }
 
+        getWorkWeek(date){
+            return DateUtil.getWorkWeek(date)
+        }
+
         goToPreviousMonth() {
             var d = new Date(this.now);
             d.setDate(1);
@@ -79,8 +83,8 @@
         }
 
         get startingDays(){
-            const startingDay = 1 // 월요일
-            return DateUtil.startingDays(this.now, startingDay)
+            const startingDay = 0; // 0: 일요일, 1: 월요일
+            return DateUtil.startingDaysOfWeek(this.now, startingDay)
         }
 
         get numOfWeeks(){
@@ -234,6 +238,9 @@
 
         .task-cell {
             vertical-align: baseline;
+            overflow-y: auto;
+            max-height: 200px;
+
 
             div.done-task {
                 padding: 2px 4px;

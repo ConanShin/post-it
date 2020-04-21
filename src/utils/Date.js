@@ -33,7 +33,7 @@ const getAllDatesInMonth = (date) => {
 }
 
 // startingDay  0: sunday, 1: monday
-const startingDays = (date, startingDay) => {
+const startingDaysOfWeek = (date, startingDay) => {
     const allDatesInMonth = getAllDatesInMonth(date);
     const startingDaysInThisMonth = allDatesInMonth.filter(value => value.getDay() === startingDay);
 
@@ -70,5 +70,18 @@ const nthWeek = (startingDays, date) => {
     return idx
 }
 
+const getWorkWeek = (date) => {
+    const firstDayOfYear = new Date(date.getFullYear(), 0, 1)
+    // const firstDay = firstDayOfYear.getDay()
+    const ONE_WEEK = 1000 * 60 * 60 * 24 * 7;
 
-export default {dateToString, isToday, isWeekend, startingDays, getAllDatesInMonth, nthWeek, monthMapper, momentYYYYMMDDWithDash}
+    const daysInBetween = date - firstDayOfYear
+    // console.log(date, "daysInBetween", daysInBetween)
+    const workWeek = parseInt(daysInBetween/ONE_WEEK) + 1
+    return workWeek
+
+}
+
+
+
+export default {dateToString, isToday, isWeekend, startingDaysOfWeek, getAllDatesInMonth, nthWeek, getWorkWeek, monthMapper, momentYYYYMMDDWithDash}
