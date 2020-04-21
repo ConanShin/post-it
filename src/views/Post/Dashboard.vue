@@ -59,61 +59,9 @@
         }
 
 
-        // 달력 표기 및 날짜 이동
+        // 월 표기 및 날짜 이동
         get month() {
             return DateUtil.monthMapper(this.now)
-        }
-
-        get datesInMonth(){
-            const firstDayOfThisMonth = new Date(this.now.getFullYear(), this.now.getMonth(), 1);
-            const lastDayOfThisMonth = new Date(this.now.getFullYear(), this.now.getMonth()+1, 0);
-            var dateArray = new Array();
-            var currentDate = firstDayOfThisMonth;
-            while (currentDate <= lastDayOfThisMonth) {
-                dateArray.push(new Date(currentDate));
-                currentDate.setDate(currentDate.getDate()+1)
-            }
-            // console.log(dateArray)
-            return dateArray;
-        }
-
-        get sundaysInThisMonth() {
-            const sundaysInMonth = this.datesInMonth.filter(value => value.getDay() === 0);
-
-            const firstSunday = new Date(sundaysInMonth[0]);
-            const previousSunday = new Date(firstSunday.getFullYear(), firstSunday.getMonth(), firstSunday.getDate()-7);
-            const lastSunday = new Date(sundaysInMonth[sundaysInMonth.length-1]);
-            const nextSunday = new Date(lastSunday.getFullYear(), lastSunday.getMonth(), lastSunday.getDate()+7);
-            const dayAfterLastSunday = new Date(lastSunday.getFullYear(), lastSunday.getMonth(), lastSunday.getDate()+1);
-
-            // console.log("SEE HERE!!!", previousSunday, firstSunday, lastSunday, nextSunday)
-
-            var sundaysIncludingPrevAndNextWeek = [...sundaysInMonth]
-            // console.log("sundaysIncludingPrevAndNextWeek", sundaysIncludingPrevAndNextWeek)
-            if(firstSunday.getDate() !== 1) { // 첫날이 아닌 경우 이전 주에도 이번달의 일부가 있음
-                sundaysIncludingPrevAndNextWeek.unshift(previousSunday)
-            }
-            // console.log("sundaysIncludingPrevAndNextWeek", sundaysIncludingPrevAndNextWeek)
-            if(dayAfterLastSunday.getMonth() === lastSunday.getMonth()) {
-                sundaysIncludingPrevAndNextWeek.push(nextSunday)
-            }
-            // console.log("sundaysIncludingPrevAndNextWeek", sundaysIncludingPrevAndNextWeek)
-
-            return sundaysIncludingPrevAndNextWeek;
-        }
-
-        get numOfWeeks(){
-            return this.sundaysInThisMonth.length-1
-        }
-
-        nthWeek(date){
-            const idx = this.sundaysInThisMonth.findIndex(value => {
-                const comp = date < value
-                console.log("comp", date , "<", value, "is" , comp)
-                return comp
-            })
-            console.log("idx", idx)
-            return idx
         }
 
         goToPreviousMonth() {
@@ -130,6 +78,14 @@
             this.now = d;
         }
 
+        get startingDays(){
+            const startingDay = 1 // 월요일
+            return DateUtil.startingDays(this.now, startingDay)
+        }
+
+        get numOfWeeks(){
+            return this.startingDays.length-1
+        }
 
         // 주별/아이템별 포스트 가져오기
         get postListByItem() {
@@ -146,7 +102,7 @@
             const tasksInWeek = Array.from({length: this.numOfWeeks}, e => [])
             itemTasks.forEach(post => {
                 const postDate = new Date(post.date)
-                const nthWeek = this.nthWeek(postDate)
+                const nthWeek = DateUtil.nthWeek(this.startingDays, postDate)
                 if(nthWeek > 0)
                     tasksInWeek[nthWeek-1].push(post)
 
@@ -207,6 +163,7 @@
 
     .month {
         display: inline-block;
+        width: 200px;
         font-size: 2em;
         font-weight: 900;
         bottom: 3px;
