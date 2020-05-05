@@ -2,14 +2,14 @@
     <div class="me-page">
         <div @click="showAddPost" class="add-new-post button">NEW +</div>
         <article class="post-it-area">
+            <div v-if="newPost.visible" class="new-post post-it" :style="{'background-color': currentColor}">
+                <div @click="saveNewPost" class="save-new-post button">save</div>
+                <date-picker class="date-picker-for-new" :defaultDate="newPost.date" @setDate="dateChange"></date-picker>
+                <div @click="closeAddPost" class="close-add-post button">cancel</div>
+                <textarea v-model="newPost.text"></textarea>
+            </div>
             <post-it v-for="post in postList" :post="post" :key="'me-' + post.uid"></post-it>
         </article>
-        <div v-if="newPost.visible" class="new-post" :style="{'background-color': currentColor}">
-            <div @click="saveNewPost" class="save-new-post button">save</div>
-            <date-picker class="date-picker-for-new" :defaultDate="newPost.date" @setDate="dateChange"></date-picker>
-            <div @click="closeAddPost" class="close-add-post button">cancel</div>
-            <textarea v-model="newPost.text"></textarea>
-        </div>
     </div>
 </template>
 
@@ -54,8 +54,8 @@
             this.resetNewPost()
         }
 
-        saveNewPost() {
-            this.$store.dispatch('newPost', this.newPost)
+        async saveNewPost() {
+            await this.$store.dispatch('newPost', this.newPost)
             this.resetNewPost()
         }
 
@@ -97,23 +97,21 @@
 
     @include mobile {
         .new-post {
-            top: 8vh;
-            left: 15vw;
         }
     }
 
     @include desktop {
         .new-post {
-            top: 25vh;
-            left: 25vw;
         }
     }
 
     .new-post {
-        position: absolute;
+        position: relative;
         border-radius: 1px;
-        box-shadow: 8px 8px 7px 7px rosybrown;
-        padding: 44px 15px 15px 15px;
+        box-shadow: 6px 6px 5px 0px rosybrown;
+        padding: 44px 11px 15px 11px;
+        height: 210px;
+        margin: 5px;
 
         textarea {
             display: inline-block;
@@ -127,14 +125,14 @@
         .close-add-post {
             position: absolute;
             top: 10px;
-            right: 0;
+            right: 10px;
         }
 
         .date-picker-for-new {
             display: inline-block;
             position: absolute;
             top: 15px;
-            left: 80px;
+            left: 75px;
         }
 
         .save-new-post {
