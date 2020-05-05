@@ -29,35 +29,26 @@
             return DateUtil.monthMapper(this.now)
         }
 
-        get donePostsInWeek() {
-            const tasksInWeek = Array.from({length: this.daysEachWeek.length}, e => [])
+        get startingDays(){
+            const startingDay = 0; // 0: 일요일, 1: 월요일
+            return DateUtil.startingDaysOfWeek(this.now, startingDay)
+        }
 
+        get numOfWeeks(){
+            return this.startingDays.length-1
+        }
+
+        // 포스트 주별로 가져오기
+        get donePostsInWeek() {
+            const tasksInWeek = Array.from({length: this.numOfWeeks}, e => [])
             this.$store.getters.filteredFinishedPosts.forEach(post => {
-                const nthWeek = DateUtil.nthWeek(new Date(post.date)) - 1 // index conversion
-                tasksInWeek[nthWeek].push(post)
+                const postDate = new Date(post.date)
+                const nthWeek = DateUtil.nthWeek(this.startingDays, postDate)
+                if(nthWeek > 0)
+                    tasksInWeek[nthWeek-1].push(post)
+
             })
             return tasksInWeek
-        }
-
-        get daysInFirstWeek() {
-            const firstDayOfMonth = new Date(this.now.getFullYear(), this.now.getMonth(), 1)
-            if (firstDayOfMonth.getDay() === 0) return 1
-            return 8 - firstDayOfMonth.getDay()
-        }
-
-        get daysInLastWeek() {
-            const lastDayOfMonth = new Date(this.now.getFullYear(), this.now.getMonth() + 1, 0)
-            if (lastDayOfMonth.getDay() === 0) return 7
-            return lastDayOfMonth.getDay()
-        }
-
-        get fullWeeks() {
-            const numberOfWeek = parseInt((new Date(this.now.getFullYear(), this.now.getMonth() + 1, 0).getDate() - this.daysInLastWeek - this.daysInFirstWeek) / 7)
-            return Array(numberOfWeek).fill(7)
-        }
-
-        get daysEachWeek() {
-            return [this.daysInFirstWeek, ...this.fullWeeks, this.daysInLastWeek]
         }
 
         hasSchedule(week) {

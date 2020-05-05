@@ -6,21 +6,23 @@
             <div @click="closeAddItem" class="close-add-item button">cancel</div>
         </div>
         <div class="head">
+            <img class="move-month-button" @click="goToPreviousMonth" src="@/assets/arrow-left.png"/>
             <div class="month">{{month}}</div>
+            <img class="move-month-button" @click="goToNextMonth" src="@/assets/arrow-right.png"/>
         </div>
         <table class="progress-table">
             <thead>
             <tr class="progress-tr week-name">
                 <th class="progress-cell item-name-cell"></th>
-                <th class="progress-cell" v-for="(days, index) in daysEachWeek"> week {{index + 1}}</th>
+                <th class="progress-cell" v-for="(days, index) in numOfWeeks"> week {{index + 1}} ( ww{{getWorkWeek(startingDays[index+1])}} )</th>
             </tr>
             </thead>
             <tbody>
-            <tr class="progress-tr" v-for="(itemPosts, index) in donePostsEachItem">
-                <td class="progress-cell item-name-cell"> {{ itemList[index] ?
-                    itemList[index].name.split(',').join('\n') : 'undefined'}}
+            <tr class="progress-tr" v-for="(itemPosts, index) in postListByItem">
+                <td class="progress-cell item-name-cell"> {{ items[index] ?
+                    items[index].name.split(',').join('\n') : 'undefined'}}
                 </td>
-                <td class="progress-cell task-cell" v-for="posts in postsInWeek(itemPosts)">
+                <td class="progress-cell task-cell" v-for="posts in getPostListByWeek(itemPosts)">
                     <div v-for="post in posts" class="done-task" :style="{'backgroundColor': post.color}"
                          @click.stop.prevent="() => showPost(post)">{{post.text}}
                     </div>
@@ -44,52 +46,7 @@
         now = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate())
         selectedPost = null
 
-        get month() {
-            return DateUtil.monthMapper(this.now)
-        }
-
-        get donePostsEachItem() {
-            this.hidePost()
-            const tasksItems = Array.from({length: this.itemList.length}, e => [])
-            this.$store.getters.filteredFinishedPosts.forEach(post => {
-                const itemIndex = this.itemList.findIndex(item => item.id === Number(post.item_id))
-                tasksItems[itemIndex].push(post)
-            })
-            return tasksItems
-        }
-
-        postsInWeek(itemTasks) {
-            const tasksInWeek = Array.from({length: this.daysEachWeek.length}, e => [])
-            itemTasks.forEach(post => {
-                const nthWeek = DateUtil.nthWeek(new Date(post.date)) - 1 // index conversion
-                tasksInWeek[nthWeek].push(post)
-            })
-
-            return tasksInWeek
-        }
-
-        get daysInFirstWeek() {
-            const firstDayOfMonth = new Date(this.now.getFullYear(), this.now.getMonth(), 1)
-            if (firstDayOfMonth.getDay() === 0) return 1
-            return 8 - firstDayOfMonth.getDay()
-        }
-
-        get daysInLastWeek() {
-            const lastDayOfMonth = new Date(this.now.getFullYear(), this.now.getMonth() + 1, 0)
-            if (lastDayOfMonth.getDay() === 0) return 7
-            return lastDayOfMonth.getDay()
-        }
-
-        get fullWeeks() {
-            const numberOfWeek = parseInt((new Date(this.now.getFullYear(), this.now.getMonth() + 1, 0).getDate() - this.daysInLastWeek - this.daysInFirstWeek) / 7)
-            return Array(numberOfWeek).fill(7)
-        }
-
-        get daysEachWeek() {
-            return [this.daysInFirstWeek, ...this.fullWeeks, this.daysInLastWeek]
-        }
-
-        get itemList() {
+        get items() {
             return this.$store.getters.items
         }
 
@@ -101,7 +58,63 @@
             this.selectedPost = null
         }
 
-        // add work item
+
+        // 월 표기 및 날짜 이동
+        get month() {
+            return DateUtil.monthMapper(this.now)
+        }
+
+        getWorkWeek(date){
+            return DateUtil.getWorkWeek(date)
+        }
+
+        goToPreviousMonth() {
+            var d = new Date(this.now);
+            d.setDate(1);
+            d.setMonth(d.getMonth() - 1);
+            this.now = d;
+        }
+
+        goToNextMonth(){
+            var d = new Date(this.now);
+            d.setDate(1);
+            d.setMonth(d.getMonth() + 1);
+            this.now = d;
+        }
+
+        get startingDays(){
+            const startingDay = 0; // 0: 일요일, 1: 월요일
+            return DateUtil.startingDaysOfWeek(this.now, startingDay)
+        }
+
+        get numOfWeeks(){
+            return this.startingDays.length-1
+        }
+
+        // 주별/아이템별 포스트 가져오기
+        get postListByItem() {
+            this.hidePost()
+            const tasksItems = Array.from({length: this.items.length}, e => [])
+            this.$store.getters.filteredFinishedPosts.forEach(post => {
+                const itemIndex = this.items.findIndex(item => item.id === Number(post.item_id))
+                tasksItems[itemIndex].push(post)
+            })
+            return tasksItems
+        }
+
+        getPostListByWeek(itemTasks) {
+            const tasksInWeek = Array.from({length: this.numOfWeeks}, e => [])
+            itemTasks.forEach(post => {
+                const postDate = new Date(post.date)
+                const nthWeek = DateUtil.nthWeek(this.startingDays, postDate)
+                if(nthWeek > 0)
+                    tasksInWeek[nthWeek-1].push(post)
+
+            })
+            return tasksInWeek
+        }
+
+        // 아이템 추가/삭제 부분... Not using for now
         newItem = {
             visible: false,
             text: ''
@@ -153,9 +166,19 @@
     }
 
     .month {
+        display: inline-block;
+        width: 200px;
         font-size: 2em;
-        font-weight: 500;
-        margin: 20px;
+        font-weight: 900;
+        bottom: 3px;
+        margin: 20px 40px;
+
+    }
+
+    .move-month-button{
+        display: inline-block;
+        font-size: 2em;
+        //@include embossed-button;
 
     }
 
@@ -215,6 +238,9 @@
 
         .task-cell {
             vertical-align: baseline;
+            overflow-y: auto;
+            max-height: 200px;
+
 
             div.done-task {
                 padding: 2px 4px;
