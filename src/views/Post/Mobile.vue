@@ -91,6 +91,7 @@
     .post-timeline{
         width: 100%;
         text-align: left;
+        display: list-item;
     }
     .week{
         position: relative;
