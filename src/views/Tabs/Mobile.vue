@@ -15,7 +15,7 @@
 
 <script>
     import {Vue, Component} from 'vue-property-decorator'
-    import RollUp from "./Components/RollUp"
+    import RollUp from "../Post/Components/RollUp"
     import DateUtil from '@/utils/Date'
 
     @Component({

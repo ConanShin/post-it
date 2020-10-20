@@ -9,7 +9,7 @@
 
 <script>
     import {Vue, Component} from 'vue-property-decorator'
-    import PostIt from './Components/PostIt'
+    import PostIt from '../Post/Components/PostIt'
 
     @Component({
         components: {PostIt}

@@ -15,8 +15,8 @@
 
 <script>
     import {Vue, Component} from 'vue-property-decorator'
-    import PostIt from './Components/PostIt'
-    import DatePicker from './Components/DatePicker'
+    import PostIt from '../Post/Components/PostIt'
+    import DatePicker from '../Post/Components/DatePicker'
 
     @Component({
         components: {PostIt, DatePicker}

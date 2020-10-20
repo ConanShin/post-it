@@ -19,6 +19,7 @@
             <my-post class="page"></my-post>
             <team-post class="page"></team-post>
             <dashboard class="page"></dashboard>
+            <div v-if="isDesktop">Hello</div>>
         </tabs>
     </div>
 </template>
@@ -27,10 +28,10 @@
     import {Vue, Component} from 'vue-property-decorator'
     import {Chrome} from 'vue-color'
     import Tabs from "vue-slide-tabs"
-    import MyPost from './Me'
-    import DashboardDesktop from './Dashboard'
-    import DashboardMobile from './Mobile'
-    import TeamPost from './Team'
+    import MyPost from '../Tabs/Me'
+    import DashboardDesktop from '../Tabs/Dashboard'
+    import DashboardMobile from '../Tabs/Mobile'
+    import TeamPost from '../Tabs/Team'
     import SessionStorage from '@/utils/SessionStorage'
     import PullToRefresh from "pulltorefreshjs";
 
@@ -49,6 +50,9 @@
         ]
 
         async beforeMount() {
+            if (isDesktop) {
+                this.tabs.push({label: 'Retro'})
+            }
             await this.$store.dispatch('fetchItems')
             await this.$store.dispatch('fetchPosts')
         }
