@@ -9,11 +9,9 @@ const isToday = date => {
 const isWeekend = date => {
     return date.getDay() === 0 || date.getDay() === 6
 }
-
+const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
 const monthMapper = date => {
-    const monthName = ['January', 'February', 'March', 'April', 'May', 'June',
-        'July', 'August', 'September', 'October', 'November', 'December']
-    return monthName[date.getMonth()]
+    return months[date.getMonth()]
 }
 const momentYYYYMMDDWithDash = date => {
     return moment(date).format('YYYY-MM-DD')
@@ -84,4 +82,4 @@ const getWorkWeek = (date) => {
 
 
 
-export default {dateToString, isToday, isWeekend, startingDaysOfWeek, getAllDatesInMonth, nthWeek, getWorkWeek, monthMapper, momentYYYYMMDDWithDash}
+export default {dateToString, isToday, isWeekend, startingDaysOfWeek, getAllDatesInMonth, nthWeek, getWorkWeek, monthMapper, months, momentYYYYMMDDWithDash}

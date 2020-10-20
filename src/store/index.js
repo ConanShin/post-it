@@ -178,6 +178,7 @@ export default new Vuex.Store({
                 post.item_name = state.workItems.find(item => item.id === Number(post.item_id)).name
             })
             return sortByDate.filter(post => post.text.includes(state.searchKeyword) || post.name.includes(state.searchKeyword))
-        }
+        },
+        finishedMyPosts: state => state.myPosts.filter(post => post.done_yn === 'y')
     }
 })
