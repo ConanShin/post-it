@@ -19,7 +19,7 @@ axios.interceptors.response.use(response => {
     return response
 }, error => {
     console.log('Response Error', error)
-    VueRouter.push({name: 'Login'})
+    location.href = '/'
 })
 
 export default new Vuex.Store({
@@ -90,8 +90,11 @@ export default new Vuex.Store({
             const kakaoUser = await KakaoConnector.fetchUserInfo()
             const kakaoName = kakaoUser.properties.nickname
             const user = SessionStorage.save('user', kakaoUser)
-            const {data: {name, color}} = await axios.post('/user', {name: kakaoName})
-
+            const response = await axios.post('/user', {name: kakaoName})
+            if (!response) {
+                return alert('해당 사용자는 접근 권한이 없습니다.')
+            }
+            const {data: {name, color}} = response
             user.saveName(name)
             store.state.userName = name
 
